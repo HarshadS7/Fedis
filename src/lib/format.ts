@@ -18,3 +18,10 @@ export function formatBps(bps: string | number, fractionDigits = 2): string {
 export function formatInteger(raw: string | number): string {
   return Number(raw).toLocaleString("en-US");
 }
+
+export function formatAddress(address: string, head = 6, tail = 4): string {
+  if (!address.startsWith("0x") || address.length < head + tail + 2) {
+    return address;
+  }
+  return `${address.slice(0, head + 2)}…${address.slice(-tail)}`;
+}

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AddressChip } from "@/components/ui/address-chip";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { fetchPremiumContrast } from "@/lib/api";
+import { DEMO_FRAUDSTER, DEMO_TRUSTED } from "@/lib/mock";
 import { formatBps, formatUsdc } from "@/lib/format";
 import type { FetchPremiumResult } from "@/lib/types";
 
@@ -57,17 +59,14 @@ export function PremiumContrastCard() {
         same agent risk, different buyer trust scores.
       </p>
 
+      <div className="mb-4 flex flex-wrap gap-2">
+        <AddressChip address={DEMO_TRUSTED} label="Trusted" />
+        <AddressChip address={DEMO_FRAUDSTER} label="Flagged" />
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
-        <QuotePanel
-          title="Trusted buyer"
-          tone="good"
-          quote={trusted}
-        />
-        <QuotePanel
-          title="Flagged buyer"
-          tone="serious"
-          quote={flagged}
-        />
+        <QuotePanel title="Trusted buyer" tone="good" quote={trusted} />
+        <QuotePanel title="Flagged buyer" tone="serious" quote={flagged} />
       </div>
 
       {error ? (

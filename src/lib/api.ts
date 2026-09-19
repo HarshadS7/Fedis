@@ -5,10 +5,12 @@ import {
   MOCK_VAULTS,
   mockQuote,
 } from "./mock";
+import { DEMO_TASK_SLASHED, mockTask } from "./mockTasks";
 import type {
   ApiMode,
   DemoFireResult,
   FetchPremiumResult,
+  FetchTaskResult,
   FetchVaultsResult,
   PremiumQuote,
   VaultInfo,
@@ -200,6 +202,77 @@ export async function fetchPremiumContrast(): Promise<{
     fetchPremium(FLAKY_AGENT_ID, DEMO_FRAUDSTER),
   ]);
   return { trusted, flagged };
+}
+
+export async function fetchTask(taskId: string): Promise<FetchTaskResult> {
+  const started = Date.now();
+  const path = `/api/tasks/${encodeURIComponent(taskId)}`;
+
+  if (useClientMockOnly()) {
+    const durationMs = Date.now() - started;
+    const task = mockTask(taskId);
+    logApi("mock", "GET", path, task ? 200 : 404, durationMs);
+    if (!task) {
+      return {
+        task: mockTask(DEMO_TASK_SLASHED)!,
+        mode: "mock",
+        fetchedAt: new Date().toISOString(),
+        durationMs,
+        error: "Unknown task id. Showing slashed demo fixture.",
+      };
+    }
+    return {
+      task,
+      mode: "mock",
+      fetchedAt: new Date().toISOString(),
+      durationMs,
+    };
+  }
+
+  try {
+    const res = await fetch(path, { cache: "no-store" });
+    const durationMs = Date.now() - started;
+
+    if (!res.ok) {
+      logApiFail(path, `HTTP ${res.status}`);
+      const fallback = mockTask(taskId) ?? mockTask(DEMO_TASK_SLASHED)!;
+      logApi("mock", "GET", path, 200, durationMs);
+      return {
+        task: fallback,
+        mode: "mock",
+        fetchedAt: new Date().toISOString(),
+        durationMs,
+        error: `API returned ${res.status}. Using client mock fixture.`,
+      };
+    }
+
+    const body = (await res.json()) as {
+      mode: ApiMode;
+      task: FetchTaskResult["task"];
+    };
+    logApi(body.mode, "GET", path, 200, durationMs);
+    return {
+      task: body.task,
+      mode: body.mode,
+      fetchedAt: new Date().toISOString(),
+      durationMs,
+    };
+  } catch (error) {
+    const durationMs = Date.now() - started;
+    logApiFail(path, error);
+    const fallback = mockTask(taskId) ?? mockTask(DEMO_TASK_SLASHED)!;
+    logApi("mock", "GET", path, 200, durationMs);
+    return {
+      task: fallback,
+      mode: "mock",
+      fetchedAt: new Date().toISOString(),
+      durationMs,
+      error:
+        error instanceof Error
+          ? `${error.message}. Falling back to mock fixture.`
+          : "Unknown error. Falling back to mock fixture.",
+    };
+  }
 }
 
 export async function fetchDemoFire(n = 50): Promise<DemoFireResult> {

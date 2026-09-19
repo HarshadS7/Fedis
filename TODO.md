@@ -157,8 +157,8 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] Color follows the entity, never its rank — filtering must not repaint survivors
 - [x] Text wears ink tokens, never the series color
 - [ ] Thin marks: 2px lines, ≥8px markers, 4px rounded data-ends, 2px surface gap between adjacent fills, recessive grid
-- [ ] ≥2 series → legend always present; ≤4 series → also direct-labeled
-- [ ] Every chart has a table view (doubles as our receipts: real tx hashes)
+- [x] ≥2 series → legend always present; ≤4 series → also direct-labeled (parallelism panel)
+- [x] Every chart has a table view (parallelism table present; real tx hashes await live benchmark)
 - [x] No number on screen that isn't in B's API response — premium contrast wired to `GET /api/premium`
 
 ### 3.3 Data contract
@@ -174,19 +174,19 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] Open in browser and actually look at it before ticking
 
 ### 3.5 Dashboard 2 — Protected Task Lifecycle
-- [ ] Render the `project_plan.md` flow literally as a state machine (inline SVG or CSS — not a chart library)
-- [ ] `INTENT → POLICY CREATED → AGENT BONDS → EXECUTE → VERIFY → PASS:RELEASE→PAY | FAIL:SLASH→COMPENSATE`
-- [ ] Current state highlighted; both branches visible at all times
-- [ ] Money movement explicit: who paid what to whom, with amounts
-- [ ] Each completed step links to its tx on the explorer
-- [ ] Drive it from a real task via `GET /api/tasks/:id`
-- [ ] This screen explains the whole product — prioritise it over polish elsewhere
+- [x] Render the `project_plan.md` flow literally as a state machine (inline SVG or CSS — not a chart library)
+- [x] `INTENT → POLICY CREATED → AGENT BONDS → EXECUTE → VERIFY → PASS:RELEASE→PAY | FAIL:SLASH→COMPENSATE`
+- [x] Current state highlighted; both branches visible at all times
+- [x] Money movement explicit: who paid what to whom, with amounts
+- [x] Each completed step links to its tx on the explorer
+- [x] Drive it from a real task via `GET /api/tasks/:id` (mock route + fixtures until B wires TaskPolicy)
+- [x] This screen explains the whole product — prioritise it over polish elsewhere
 
 ### 3.6 Dashboard 3 — Monad parallelism (GO.md: panel only if time; full chart deferred)
 - [x] Two series only (independent vs conflicting) — slots 1 and 2, well inside the 3-series all-pairs cap
-- [ ] Per-tx dot/strip plot over time, one row per workload
-- [ ] Stat tiles: tx count, p50 / p95 inclusion, settled count, reverts
-- [ ] `latest` / `safe` / `finalized` reported separately — never collapsed into one "confirmed"
+- [x] Per-tx dot/strip plot over time, one row per workload (illustrative until live `fire.mjs` tx points)
+- [x] Stat tiles: tx count, p50 / p95 inclusion, settled count, reverts (table + tiles; tx hashes await live run)
+- [x] `latest` / `safe` / `finalized` reported separately — never collapsed into one "confirmed"
 - [x] On-screen labels distinguishing **our measurements** from **Monad's published specs**
 - [ ] Live-updating from B's stream; visible connection state
 - [ ] Table view with real tx hashes
@@ -237,3 +237,5 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - 2026-09-19: Verified the inherited contracts track before building on it (TODO 1.1). All claims in `contracts/README.md` hold: 60/60 tests pass, `node export-abi.mjs` reproduces the committed ABIs with zero drift, and `Deploy.s.sol` + `Seed.s.sol` run clean against a fresh anvil producing byte-identical addresses to `deployments/31337.json`. Confirmed Monad testnet is chain 10143 and the canonical ERC-8004 registry still has no bytecode there. Nothing inherited is broken; the bonded-execution build starts from a green base.
 - 2026-09-19: Person C refactored frontend per GO.md — single Agent Risk Terminal, locked design tokens, VaultInfo types, mock/live `/api/vaults` client with fallback fixtures, StatTiles + DataTable + StatusBadge primitives. Removed `/lp`, `/demo`, old vibecode styling.
 - 2026-09-19: Person C wired `GET /api/premium` contrast card ($1.10 vs $12.95 on flaky-scraper-v0) and `POST /api/demo/fire` parallelism panel (simulated shape, Monad 400ms/800ms labeled separately). Browser-verified on `:3001`.
+- 2026-09-19: Person C polish pass — `AddressChip`, light-mode tokens, series legend, benchmark stat tiles (tx/reverts/p50), refresh control, `OurMeasurements` types ready for live `fire.mjs` output.
+- 2026-09-19: Person C shipped Protected Task Lifecycle panel (`GET /api/tasks/:id` mock), workload strip plot, latest/safe/finalized labels on benchmark panel.

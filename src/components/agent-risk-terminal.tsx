@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { DevStatusStrip } from "@/components/dev-status-strip";
 import { ParallelismPanel } from "@/components/parallelism-panel";
 import { PremiumContrastCard } from "@/components/premium-contrast-card";
+import { TaskLifecyclePanel } from "@/components/task-lifecycle-panel";
 import { Card } from "@/components/ui/card";
 import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { StatTile } from "@/components/ui/stat-tile";
@@ -114,6 +115,8 @@ export function AgentRiskTerminal() {
             fetchedAt={result.fetchedAt}
             durationMs={result.durationMs}
             error={result.error}
+            onRefresh={() => void load()}
+            refreshing={loading}
           />
         ) : null}
 
@@ -152,6 +155,8 @@ export function AgentRiskTerminal() {
             />
           </Card>
         ) : null}
+
+        {!loading && result ? <TaskLifecyclePanel /> : null}
 
         {!loading && result ? <PremiumContrastCard /> : null}
 
