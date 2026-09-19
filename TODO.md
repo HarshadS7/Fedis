@@ -10,11 +10,11 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 
 ## 0. Environment & prerequisites (anyone, do first)
 
-- [ ] `forge --version` works; install Foundry if not
-- [ ] `anvil` starts on :8545
+- [x] `forge --version` works; install Foundry if not
+- [x] `anvil` starts on :8545
 - [ ] `npm install` clean; `npm run dev` serves without errors
 - [ ] Fix `monskills` plugin load (see Blockers) or confirm direct-path reads work
-- [ ] Confirm current Monad testnet RPC + chain id from a live source (don't trust `foundry.toml`)
+- [x] Confirm current Monad testnet RPC + chain id from a live source (don't trust `foundry.toml`)
 - [ ] Get a funded testnet key; confirm faucet works and the 10 MON reserve floor is cleared
 - [ ] Agree shared conventions once: USDC 6 decimals, `taskId`/`agentId` as `bytes32`, bond as bps of `maxCompensation`
 
@@ -23,10 +23,10 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 ## 1. Person A — Contracts (bonded execution)
 
 ### 1.1 Verify inherited state
-- [ ] `cd contracts && forge test` — confirm the claimed 60/60 actually pass
-- [ ] Confirm `contracts/abi/*.json` matches current source (`node export-abi.mjs`)
-- [ ] Confirm `Deploy.s.sol` + `Seed.s.sol` still run clean against anvil
-- [ ] Report any claim in `contracts/README.md` that doesn't hold
+- [x] `cd contracts && forge test` — confirm the claimed 60/60 actually pass
+- [x] Confirm `contracts/abi/*.json` matches current source (`node export-abi.mjs`)
+- [x] Confirm `Deploy.s.sol` + `Seed.s.sol` still run clean against anvil
+- [x] Report any claim in `contracts/README.md` that doesn't hold
 
 ### 1.2 `TaskPolicy.sol`
 - [ ] `mapping(bytes32 taskId => Policy)`, isolated per task
@@ -220,7 +220,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [ ] `monskills` plugin doesn't load — installed under old dir name `Fides`, dir is now `fides`, so its registered `projectPath` is dead. Fix via `/plugin` reinstall, or read skills directly from `~/.claude/plugins/cache/monskills/monskills/0.7.2/skills/`
 - [ ] Old plan's "600ms block" claim is wrong — Monad is 400ms blocks / 800ms finality. Purge from code comments, UI copy, and pitch
 - [ ] 10 MON reserve floor per EOA + ~1 tx/1.2s for low-balance accounts — thin-funded burner wallets will flatten the benchmark
-- [ ] ERC-8004 registry has no bytecode on Monad testnet (per `contracts/README.md`) — re-verify before promising a live read
+- [x] ERC-8004 registry has no bytecode on Monad testnet — **re-verified 2026-09-19**: `cast code 0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` returns `0x` on chain 10143. Mock registry fallback stays necessary
 
 ---
 
@@ -230,3 +230,4 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - 2026-09-19: Plan pivoted from `project.md` (insurance pool) to `project_plan.md` (bonded execution) after judging feedback. Wrote `fedis-build-plan-v2.md`, created this file.
 - 2026-09-19: Wrote `TEAM-PROMPTS.md` — per-person agent prompts with verify-first, research-don't-guess, logging, and checkpoint rules. Found the monskills load bug and the 600ms/400ms error while writing it.
 - 2026-09-19: Expanded this file to a granular working-app checklist; added a locked design-token set and anti-vibecode rules for the frontend, grounded in the dataviz skill's validated palette and form rules rather than taste.
+- 2026-09-19: Verified the inherited contracts track before building on it (TODO 1.1). All claims in `contracts/README.md` hold: 60/60 tests pass, `node export-abi.mjs` reproduces the committed ABIs with zero drift, and `Deploy.s.sol` + `Seed.s.sol` run clean against a fresh anvil producing byte-identical addresses to `deployments/31337.json`. Confirmed Monad testnet is chain 10143 and the canonical ERC-8004 registry still has no bytecode there. Nothing inherited is broken; the bonded-execution build starts from a green base.
