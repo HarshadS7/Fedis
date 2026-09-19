@@ -20,7 +20,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 ///
 ///      Giving each agent its own escrow address gives each agent its own
 ///      `USDC.balanceOf(escrow)` slot. Agent A's premium and Agent B's slash then touch
-///      disjoint state at BOTH layers -- Fides accounting and the USDC ledger -- so they
+///      disjoint state at BOTH layers -- fedis accounting and the USDC ledger -- so they
 ///      commit in the same block in parallel.
 contract VaultEscrow {
     using SafeERC20 for IERC20;

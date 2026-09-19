@@ -123,7 +123,7 @@ export type BenchStreamEvent =
   | { type: "error"; message: string };
 
 export function benchRpcUrl(): string {
-  return process.env.FIDES_BENCH_RPC ?? "http://127.0.0.1:8547";
+  return process.env.fedis_BENCH_RPC ?? "http://127.0.0.1:8547";
 }
 
 export async function benchNodeReachable(): Promise<boolean> {

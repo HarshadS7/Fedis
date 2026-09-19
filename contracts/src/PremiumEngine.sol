@@ -8,7 +8,7 @@ import {UserUnderwriting} from "./UserUnderwriting.sol";
 
 /// @title PremiumEngine
 /// @notice Prices a policy at the moment an agent-to-agent task is about to execute. This is
-///         the bilateral part of Fides: one side of the quote is how badly the AGENT has
+///         the bilateral part of fedis: one side of the quote is how badly the AGENT has
 ///         failed in the past, the other is how likely the USER is to fake a claim.
 ///
 ///         premium = taskCost x agentRisk x userMultiplier

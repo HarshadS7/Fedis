@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Economic enforcement for autonomous agents",
   description:
-    "Fides — bonded execution, on-chain slashing, and risk visibility for every paid agent task on Monad.",
+    "fedis — bonded execution, on-chain slashing, and risk visibility for every paid agent task on Monad.",
 };
 
 export default function HomePage() {

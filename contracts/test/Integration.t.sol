@@ -227,7 +227,7 @@ contract IntegrationTest is Test {
 
         assertTrue(_intersects(usdcWritesA, usdcWritesB), "one payer means one contended slot");
 
-        // The contention is entirely in the token ledger; Fides' own accounting stays clean.
+        // The contention is entirely in the token ledger; fedis' own accounting stays clean.
         vm.record();
         vm.prank(middleware);
         vault.slash(agentA, makeAddr("victimA"), 1 * USDC_UNIT);

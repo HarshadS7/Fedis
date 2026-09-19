@@ -69,8 +69,8 @@ contract Seed is Script {
 
         // Buyer-side history: one wallet earns its way into the high-trust tier, another gets
         // caught farming a fraudulent dispute, so the frontend can show both ends of the band.
-        address trusted = vm.addr(uint256(keccak256("fides.demo.trusted")));
-        address fraudster = vm.addr(uint256(keccak256("fides.demo.fraudster")));
+        address trusted = vm.addr(uint256(keccak256("fedis.demo.trusted")));
+        address fraudster = vm.addr(uint256(keccak256("fedis.demo.fraudster")));
 
         uw.recordGoodVolume(trusted, 45_000 * USDC_UNIT);
         uw.recordGoodVolume(fraudster, 45_000 * USDC_UNIT);

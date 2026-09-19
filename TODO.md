@@ -249,7 +249,7 @@ proven instead by the storage-access tests in `Integration.t.sol`.
 
 ## 6. Blockers / environment
 
-- [ ] `monskills` plugin doesn't load — installed under old dir name `Fides`, dir is now `fides`, so its registered `projectPath` is dead. Fix via `/plugin` reinstall, or read skills directly from `~/.claude/plugins/cache/monskills/monskills/0.7.2/skills/`
+- [ ] `monskills` plugin doesn't load — installed under old dir name `fedis`, dir is now `fedis`, so its registered `projectPath` is dead. Fix via `/plugin` reinstall, or read skills directly from `~/.claude/plugins/cache/monskills/monskills/0.7.2/skills/`
 - [ ] Old plan's "600ms block" claim is wrong — Monad is 400ms blocks / 800ms finality. Purge from code comments, UI copy, and pitch
 - [ ] 10 MON reserve floor per EOA + ~1 tx/1.2s for low-balance accounts — thin-funded burner wallets will flatten the benchmark
 - [x] ERC-8004 registry has no bytecode on Monad testnet — **re-verified 2026-09-19**: `cast code 0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` returns `0x` on chain 10143. Mock registry fallback stays necessary

@@ -77,7 +77,7 @@ contract TaskPolicy is Ownable {
     /// @notice The whole protocol state, partitioned by task id. No global aggregate.
     mapping(bytes32 => Policy) private _policies;
 
-    /// @notice Accounts allowed to drive the lifecycle: the Fides middleware, and the
+    /// @notice Accounts allowed to drive the lifecycle: the fedis middleware, and the
     ///         `BondVault` / `ValidationRouter` contracts once deployed.
     mapping(address => bool) public authorized;
 

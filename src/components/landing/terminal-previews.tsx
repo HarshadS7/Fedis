@@ -38,7 +38,7 @@ export function HeroTerminalPreview() {
     <TerminalFrame className="p-4 [transform:perspective(1200px)_rotateX(2deg)]">
       <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2">
         <div>
-          <p className="text-xs text-white">Fides</p>
+          <p className="text-xs text-white">fedis</p>
           <p className="text-[10px] text-[#898781]">Agent Risk Terminal</p>
         </div>
         <p className="text-[9px] text-[#898781]">Monad · 400ms / 800ms</p>

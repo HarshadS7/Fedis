@@ -51,7 +51,7 @@ that breaks on stage.
 
 ````text
 60-minute hackathon finish. Work fast, skip anything not on this list, no refactoring.
-Repo: /home/shaurya/Documents/dev/hackathons/fides
+Repo: /home/shaurya/Documents/dev/hackathons/fedis
 
 WHAT ALREADY EXISTS (don't rebuild any of it, don't read the plan docs, no time):
 - contracts/src/: AgentVault.sol, PremiumEngine.sol, UserUnderwriting.sol, VaultEscrow.sol,
@@ -119,7 +119,7 @@ RULES
 
 ````text
 60-minute hackathon finish. Work fast, skip anything not on this list.
-Repo: /home/shaurya/Documents/dev/hackathons/fides (Next.js 16, React 19, Tailwind v4)
+Repo: /home/shaurya/Documents/dev/hackathons/fedis (Next.js 16, React 19, Tailwind v4)
 
 WHAT EXISTS: a tested insurance-pool contract suite with exported ABIs. src/app is still
 the default create-next-app scaffold — no API routes yet. You are building the API layer.
@@ -196,7 +196,7 @@ RULES
 ## Person C — one screen, done properly
 
 ````text
-60-minute hackathon finish. Work fast. Repo: /home/shaurya/Documents/dev/hackathons/fides
+60-minute hackathon finish. Work fast. Repo: /home/shaurya/Documents/dev/hackathons/fedis
 Next.js 16 + React 19 + Tailwind v4 (v4 configures differently from v3 — check
 postcss.config.mjs and globals.css before assuming v3 patterns). src/app is still the
 default create-next-app scaffold; you're starting from zero.

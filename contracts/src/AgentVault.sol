@@ -11,7 +11,7 @@ import {VaultEscrow} from "./VaultEscrow.sol";
 import {IIdentityRegistry} from "./interfaces/IIdentityRegistry.sol";
 
 /// @title AgentVault
-/// @notice The agent side of Fides. Liquidity Providers underwrite individual AI agents by
+/// @notice The agent side of fedis. Liquidity Providers underwrite individual AI agents by
 ///         depositing USDC into that agent's isolated vault. LPs collect the insurance
 ///         premiums paid on that agent's tasks; when the agent hallucinates, misfires, or
 ///         misses a task, the vault is slashed to make the buyer whole.
@@ -23,7 +23,7 @@ import {IIdentityRegistry} from "./interfaces/IIdentityRegistry.sol";
 ///      optimistic scheduler detects the conflict, re-executes serially, and throughput
 ///      collapses to Ethereum's.
 ///
-///      Fides has no such variable. State is partitioned two ways:
+///      fedis has no such variable. State is partitioned two ways:
 ///        1. Accounting lives in `_vaults[agentId]` and `sharesOf[agentId][lp]` -- slots
 ///           derived from the agent id, so agents never collide with each other.
 ///        2. Custody lives in a per-agent `VaultEscrow` clone, so the USDC ledger itself is
@@ -131,7 +131,7 @@ contract AgentVault is Ownable, ReentrancyGuardTransient {
     ///         `MockIdentityRegistry`. May be address(0) to skip identity checks entirely.
     IIdentityRegistry public identityRegistry;
 
-    /// @notice Accounts allowed to call `bond` / `slash` (the Fides middleware).
+    /// @notice Accounts allowed to call `bond` / `slash` (the fedis middleware).
     mapping(address => bool) public authorized;
 
     // ---------------------------------------------------------------------

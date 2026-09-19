@@ -1,4 +1,4 @@
-# Fides — Smart Contracts (Person A)
+# fedis — Smart Contracts (Person A)
 
 Bilateral underwriting for the agentic web, on Monad. LPs underwrite individual AI agents;
 buyers are priced by an on-chain trust score; failed tasks are settled by slashing the
@@ -200,7 +200,7 @@ A conventional insurance pool keeps one `totalTreasury` variable. 500 agents tra
 once means 500 writes to one slot: the optimistic scheduler detects the conflict, re-executes
 serially, and throughput collapses to Ethereum's.
 
-Fides has no such variable. State is partitioned at **three** layers:
+fedis has no such variable. State is partitioned at **three** layers:
 
 1. **Accounting** — `_vaults[agentId]` and `sharesOf[agentId][lp]`, slots derived from the
    agent id.

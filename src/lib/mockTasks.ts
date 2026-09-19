@@ -8,9 +8,9 @@ import type { TaskInfo, TaskStep } from "./types";
 
 const usdc = (usd: number) => Math.round(usd * 1e6).toString();
 
-export const DEMO_TASK_SLASHED = keccak256(toBytes("fides.demo.task.slashed"));
-export const DEMO_TASK_RELEASED = keccak256(toBytes("fides.demo.task.released"));
-export const DEMO_TASK_INFLIGHT = keccak256(toBytes("fides.demo.task.inflight"));
+export const DEMO_TASK_SLASHED = keccak256(toBytes("fedis.demo.task.slashed"));
+export const DEMO_TASK_RELEASED = keccak256(toBytes("fedis.demo.task.released"));
+export const DEMO_TASK_INFLIGHT = keccak256(toBytes("fedis.demo.task.inflight"));
 
 export const DEMO_TASK_OPTIONS = [
   { id: DEMO_TASK_SLASHED, label: "Failed task (slashed)" },

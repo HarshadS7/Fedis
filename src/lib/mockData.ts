@@ -7,8 +7,8 @@ function demoAddress(label: string): `0x${string}` {
 }
 
 /** Seeded buyers from contracts/script/Seed.s.sol */
-export const DEMO_TRUSTED = demoAddress("fides.demo.trusted");
-export const DEMO_FRAUDSTER = demoAddress("fides.demo.fraudster");
+export const DEMO_TRUSTED = demoAddress("fedis.demo.trusted");
+export const DEMO_FRAUDSTER = demoAddress("fedis.demo.fraudster");
 
 /**
  * The exact values Seed.s.sol puts on a freshly seeded chain (recorded in

@@ -3,8 +3,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Fides",
-    template: "%s — Fides",
+    default: "fedis",
+    template: "%s — fedis",
   },
   description:
     "Economic enforcement for autonomous agents — bonded liability, on-chain slashing, and risk visibility on Monad.",

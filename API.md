@@ -119,9 +119,9 @@ out loud before a judge asks.
 
 | Env | Default | Effect |
 |---|---|---|
-| `FIDES_API_MODE` | unset | `mock` forces fixtures even if a chain is up |
-| `FIDES_RPC_URL` | `http://127.0.0.1:8545` | node to read from |
-| `FIDES_CHAIN_ID` | `31337` | picks `contracts/deployments/<id>.json` |
+| `fedis_API_MODE` | unset | `mock` forces fixtures even if a chain is up |
+| `fedis_RPC_URL` | `http://127.0.0.1:8545` | node to read from |
+| `fedis_CHAIN_ID` | `31337` | picks `contracts/deployments/<id>.json` |
 
 Mode is automatic: live only if addresses exist **and** the node answers (re-probed every
 5s, so a chain coming up mid-demo is picked up without a restart). Addresses and ABIs are

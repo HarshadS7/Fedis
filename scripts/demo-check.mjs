@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createPublicClient, http } from "viem";
 
-const RPC = process.env.FIDES_RPC_URL ?? "http://127.0.0.1:8545";
-const CHAIN_ID = Number(process.env.FIDES_CHAIN_ID ?? "31337");
-const APP = process.env.FIDES_APP_URL ?? "http://localhost:3000";
+const RPC = process.env.fedis_RPC_URL ?? "http://127.0.0.1:8545";
+const CHAIN_ID = Number(process.env.fedis_CHAIN_ID ?? "31337");
+const APP = process.env.fedis_APP_URL ?? "http://localhost:3000";
 
 const pub = createPublicClient({ transport: http(RPC) });
 

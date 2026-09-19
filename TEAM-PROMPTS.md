@@ -32,7 +32,7 @@ These are baked into each prompt below; repeated here so humans can read them on
 ### Monad skills plugin — there's a bug, here's the workaround
 
 `.claude/settings.json` enables the `monskills` plugin, but it was installed while this
-directory was named `Fides` and it's now `fides`. The registered `projectPath` in
+directory was named `fedis` and it's now `fedis`. The registered `projectPath` in
 `~/.claude/plugins/installed_plugins.json` points at a directory that no longer exists, so
 **the skills do not load in this repo.** Two fixes:
 
@@ -83,7 +83,7 @@ Relevant reference files live under
 ## Person A — Smart Contracts
 
 ````text
-You are working in /home/shaurya/Documents/dev/hackathons/fides on a Monad hackathon
+You are working in /home/shaurya/Documents/dev/hackathons/fedis on a Monad hackathon
 project called Fedis. You own the SMART CONTRACTS track. Work
 through this one step at a time, stopping at each CHECKPOINT to report to me before
 continuing.
@@ -117,7 +117,7 @@ Report anything broken BEFORE you build on top of it.
 ## Step 2 — Load the Monad knowledge you're missing
 
 The repo has a `monskills` plugin enabled but it does NOT load — it was installed when
-this directory was named `Fides` (capital F) and the directory is now `fides`, so the
+this directory was named `fedis` (capital F) and the directory is now `fedis`, so the
 registered projectPath is dead. Either re-install it via /plugin, or just read the skill
 files directly from:
   ~/.claude/plugins/cache/monskills/monskills/0.7.2/skills/
@@ -234,7 +234,7 @@ low-balance accounts on Monad; thinly-funded burner wallets will rate-limit the 
 ## Person B — Middleware & x402 Integration
 
 ````text
-You are working in /home/shaurya/Documents/dev/hackathons/fides on a Monad hackathon
+You are working in /home/shaurya/Documents/dev/hackathons/fedis on a Monad hackathon
 project called Fedis. You own the MIDDLEWARE / x402 track. Work
 through this one step at a time, stopping at each CHECKPOINT to report to me.
 
@@ -283,7 +283,7 @@ with web search and cite your sources — do NOT write code from memory:
      Person A has notes on this in contracts/README.md; verify rather than trust.
 
 For Monad-specific questions, this repo has a `monskills` plugin that does NOT currently
-load (it was installed under the old directory name `Fides`, now `fides`, so its
+load (it was installed under the old directory name `fedis`, now `fedis`, so its
 registered path is dead). Either re-install via /plugin, or read the files directly:
   ~/.claude/plugins/cache/monskills/monskills/0.7.2/skills/
 Start with monskill/SKILL.md (router). For your track, these matter most:
@@ -399,7 +399,7 @@ CHECKPOINT 4 — benchmark producing real, defensible numbers. Show me a full ru
 ## Person C — Frontend & Visualizer
 
 ````text
-You are working in /home/shaurya/Documents/dev/hackathons/fides on a Monad hackathon
+You are working in /home/shaurya/Documents/dev/hackathons/fedis on a Monad hackathon
 project called Fedis. You own the FRONTEND track. Work through this
 one step at a time, stopping at each CHECKPOINT to report to me.
 
@@ -444,7 +444,7 @@ you're in on every call: [api] MODE=mock GET /api/tasks/123 -> 200 in 4ms.
 ## Step 3 — Get the Monad facts right before they end up in UI copy
 
 This repo has a `monskills` plugin that currently does NOT load (installed under the old
-directory name `Fides`; the directory is now `fides`, so its registered path is dead).
+directory name `fedis`; the directory is now `fedis`, so its registered path is dead).
 Re-install via /plugin, or read the files directly at:
   ~/.claude/plugins/cache/monskills/monskills/0.7.2/skills/
 Read monskill/SKILL.md (router) then concepts/references/block-states.md.

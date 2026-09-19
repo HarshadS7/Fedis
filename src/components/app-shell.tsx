@@ -11,7 +11,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               href="/"
               className="text-lg font-medium tracking-[-0.02em] text-[var(--ink-primary)] hover:underline"
             >
-              Fides
+              fedis
             </Link>
           </div>
           <nav className="hidden items-center gap-8 sm:flex">

@@ -10,7 +10,7 @@ import {MockIdentityRegistry} from "../src/mocks/MockIdentityRegistry.sol";
 import {TaskPolicy} from "../src/TaskPolicy.sol";
 import {BondVault} from "../src/BondVault.sol";
 
-/// @notice Deploys the full Fides stack and writes `deployments/<chainId>.json` for the
+/// @notice Deploys the full fedis stack and writes `deployments/<chainId>.json` for the
 ///         middleware and frontend to read.
 ///
 /// Usage:
@@ -112,7 +112,7 @@ contract Deploy is Script {
         address taskPolicy,
         address bondVault
     ) internal {
-        string memory key = "fides";
+        string memory key = "fedis";
         vm.serializeUint(key, "chainId", block.chainid);
         vm.serializeAddress(key, "usdc", usdc);
         vm.serializeAddress(key, "identityRegistry", registry);

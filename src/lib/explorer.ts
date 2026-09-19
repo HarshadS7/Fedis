@@ -1,7 +1,7 @@
-/** Client-safe chain id — mirrors FIDES_CHAIN_ID without importing server chain module. */
+/** Client-safe chain id — mirrors fedis_CHAIN_ID without importing server chain module. */
 const CHAIN_ID = Number(
-  process.env.NEXT_PUBLIC_FIDES_CHAIN_ID ??
-    process.env.FIDES_CHAIN_ID ??
+  process.env.NEXT_PUBLIC_fedis_CHAIN_ID ??
+    process.env.fedis_CHAIN_ID ??
     31337,
 );
 

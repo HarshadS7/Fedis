@@ -5,7 +5,7 @@ import {IIdentityRegistry} from "../interfaces/IIdentityRegistry.sol";
 
 /// @title MockIdentityRegistry
 /// @notice Stand-in for the ERC-8004 Identity Registry on Monad testnet, which has no
-///         deployed bytecode. Mirrors only `ownerOf(uint256)`, the one function Fides reads.
+///         deployed bytecode. Mirrors only `ownerOf(uint256)`, the one function fedis reads.
 contract MockIdentityRegistry is IIdentityRegistry {
     mapping(uint256 => address) private _owners;
 

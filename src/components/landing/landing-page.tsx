@@ -8,7 +8,7 @@ import {
   VaultFeaturePreview,
 } from "./terminal-previews";
 
-const GITHUB_URL = "https://github.com/HarshadS7/Fides";
+const GITHUB_URL = "https://github.com/HarshadS7/fedis";
 
 function NavLink({
   href,
@@ -73,7 +73,7 @@ export function LandingPage() {
         <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 sm:pb-24 sm:pt-10">
           <header className="mb-16 flex items-center justify-between sm:mb-20">
             <Link href="/" className="text-lg font-medium tracking-[-0.02em]">
-              Fides
+              fedis
             </Link>
             <nav className="hidden items-center gap-8 sm:flex">
               <NavLink href="#product">Product</NavLink>
@@ -120,7 +120,7 @@ export function LandingPage() {
             Autonomous agents can accept paid work through protocols like x402, but
             payment alone doesn&apos;t create accountability. When an agent fails a
             task, stalls, or delivers garbage, buyers have no enforceable recourse.
-            Fides adds economic skin in the game: agents bond collateral, tasks
+            fedis adds economic skin in the game: agents bond collateral, tasks
             define machine-checkable success before execution, and failure triggers
             compensation — not subjective AI judging, but deterministic settlement.
           </p>
@@ -236,7 +236,7 @@ export function LandingPage() {
       <footer className="border-t border-[var(--border)]">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-[var(--ink-muted)] sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="font-medium text-[var(--ink-primary)]">Fides</span>
+            <span className="font-medium text-[var(--ink-primary)]">fedis</span>
             <span aria-hidden="true">·</span>
             <span>Built on Monad</span>
             <span aria-hidden="true">·</span>
@@ -249,7 +249,7 @@ export function LandingPage() {
               GitHub
             </a>
           </div>
-          <p>© {new Date().getFullYear()} Fides</p>
+          <p>© {new Date().getFullYear()} fedis</p>
         </div>
       </footer>
     </div>

@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title UserUnderwriting
-/// @notice The buyer side of the Fides bilateral underwriting model: an on-chain CIBIL-style
+/// @notice The buyer side of the fedis bilateral underwriting model: an on-chain CIBIL-style
 ///         trust score that prices how likely a user is to farm fraudulent disputes against
 ///         LP capital. High-trust users pay a fraction of the base premium; fresh or punished
 ///         wallets pay a multiple of it and over-collateralize their tasks.
@@ -68,7 +68,7 @@ contract UserUnderwriting is Ownable {
 
     mapping(address => UserRecord) private _records;
 
-    /// @notice Accounts allowed to write history (the Fides middleware / claims oracle).
+    /// @notice Accounts allowed to write history (the fedis middleware / claims oracle).
     mapping(address => bool) public authorized;
 
     // ---------------------------------------------------------------------

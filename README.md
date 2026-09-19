@@ -1,4 +1,4 @@
-# Fides
+# fedis
 
 A **bonded-execution liability layer for AI agents on Monad**. Buyers create protected tasks; agents lock a bond; a deterministic validator passes or fails the result; the bond is released or slashed and the buyer compensated. All of it is visible in the UI, on a real chain.
 
@@ -112,7 +112,7 @@ Source of truth: `contracts/deployments/<chainId>.json` — the app reads addres
 | `UserUnderwriting` | `0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0` | buyer trust scores |
 | `MockUSDC` | `0x5FbDB2315678afecb367f032d93F642f64180aa3` | 6-decimal settlement token (open faucet) |
 | `IdentityRegistry` | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` | ERC-8004 read surface (mock — testnet has no registry bytecode) |
-| Middleware signer | `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266` | anvil account 0 = default `FIDES_MIDDLEWARE_KEY` |
+| Middleware signer | `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266` | anvil account 0 = default `fedis_MIDDLEWARE_KEY` |
 
 **Monad testnet:** after a testnet deploy, the addresses land in `contracts/deployments/10143.json` — they will differ from the table. Commit that file and the app picks them up automatically; the table here stays the local reference (see [Deploying to Monad testnet](#deploying-to-monad-testnet)).
 
@@ -124,11 +124,11 @@ Source of truth: `contracts/deployments/<chainId>.json` — the app reads addres
 
 | Variable | Default | Effect |
 |---|---|---|
-| `FIDES_API_MODE` | `auto` | `mock` forces fixtures even when a chain is up |
-| `FIDES_RPC_URL` | `http://127.0.0.1:8545` | chain node to read from |
-| `FIDES_CHAIN_ID` | `31337` | picks `contracts/deployments/<chainId>.json` |
-| `FIDES_MIDDLEWARE_KEY` | anvil account-0 key | private key that signs task-lifecycle writes (must be a wallet authorized on the deployed contracts) |
-| `FIDES_BENCH_RPC` | `http://127.0.0.1:8547` | node for the benchmark script |
+| `fedis_API_MODE` | `auto` | `mock` forces fixtures even when a chain is up |
+| `fedis_RPC_URL` | `http://127.0.0.1:8545` | chain node to read from |
+| `fedis_CHAIN_ID` | `31337` | picks `contracts/deployments/<chainId>.json` |
+| `fedis_MIDDLEWARE_KEY` | anvil account-0 key | private key that signs task-lifecycle writes (must be a wallet authorized on the deployed contracts) |
+| `fedis_BENCH_RPC` | `http://127.0.0.1:8547` | node for the benchmark script |
 | `PRIVATE_KEY` (contracts only) | anvil account-0 key | used by Foundry scripts and `fire.mjs` |
 
 `contracts/.env.example` documents the deploy-time vars (`PRIVATE_KEY`, `MIDDLEWARE`, `USDC`). Note it is gitignored — recreate it from that template on each machine.
@@ -142,14 +142,14 @@ One-time setup. Prerequisite: a wallet funded with testnet MON ([faucet.monad.xy
 ```bash
 cd contracts
 cp .env.example .env        # fill in PRIVATE_KEY (funded deployer) and MIDDLEWARE (= the signer wallet that
-                            # FIDES_MIDDLEWARE_KEY controls — it is what gets authorized on the contracts)
+                            # fedis_MIDDLEWARE_KEY controls — it is what gets authorized on the contracts)
 forge script script/Deploy.s.sol --rpc-url monad_testnet --broadcast
 forge script script/Seed.s.sol   --rpc-url monad_testnet --broadcast
 cd ..
-npm run seed:tasks           # needs FIDES_RPC_URL/FIDES_CHAIN_ID/FIDES_MIDDLEWARE_KEY set, or use --rpc/--chain flags
+npm run seed:tasks           # needs fedis_RPC_URL/fedis_CHAIN_ID/fedis_MIDDLEWARE_KEY set, or use --rpc/--chain flags
 ```
 
-**Crucial:** commit the resulting `contracts/deployments/10143.json`. The deployed app reads that file off disk to find its contracts — without it, even `FIDES_API_MODE=live` serves mock data. (ABIs in `contracts/abi/` are already committed.)
+**Crucial:** commit the resulting `contracts/deployments/10143.json`. The deployed app reads that file off disk to find its contracts — without it, even `fedis_API_MODE=live` serves mock data. (ABIs in `contracts/abi/` are already committed.)
 
 ---
 
@@ -172,17 +172,17 @@ Steps:
 `.env.vercel` is gitignored and is **not** auto-loaded by Next.js, so it cannot affect local dev. It contains:
 
 ```dotenv
-FIDES_RPC_URL=https://testnet-rpc.monad.xyz
-FIDES_CHAIN_ID=10143
-FIDES_API_MODE=live
-FIDES_MIDDLEWARE_KEY=<PRIVATE_TESTNET_MIDDLEWARE_PRIVATE_KEY>   # replace in Vercel's encrypted field
+fedis_RPC_URL=https://testnet-rpc.monad.xyz
+fedis_CHAIN_ID=10143
+fedis_API_MODE=live
+fedis_MIDDLEWARE_KEY=<PRIVATE_TESTNET_MIDDLEWARE_PRIVATE_KEY>   # replace in Vercel's encrypted field
 ```
 
 Security rules:
 
-- `FIDES_MIDDLEWARE_KEY` is a **secret** — enter it via Vercel's encrypted field; never paste it in chat, GitHub, or commits.
+- `fedis_MIDDLEWARE_KEY` is a **secret** — enter it via Vercel's encrypted field; never paste it in chat, GitHub, or commits.
 - It must be the private key of the **same wallet** set as `MIDDLEWARE` during the contract deploy.
-- Do **not** put `http://127.0.0.1:8545` in Vercel — serverless functions cannot reach your local Anvil. If the testnet RPC is flaky, set `FIDES_API_MODE=mock` instead of reverting to localhost.
+- Do **not** put `http://127.0.0.1:8545` in Vercel — serverless functions cannot reach your local Anvil. If the testnet RPC is flaky, set `fedis_API_MODE=mock` instead of reverting to localhost.
 
 ```bash
 # 3. Deploy / redeploy. The site works immediately and auto-serves mock fixtures
@@ -240,7 +240,7 @@ TODO.md / GO.md     team status and last-minute runbook
 | Every panel says `mock` | No node reachable. Start `anvil` (or a testnet RPC) and wait ~5s — the app re-probes automatically. |
 | `Task not found on-chain` | Run `npm run seed:tasks` after deploy. |
 | `Bench node unreachable … 503` | Benchmark panel: start anvil on `:8547` + run `fire.mjs`, or commit `contracts/bench-latest.json` for the cached fallback. |
-| Task writes fail "insufficient funds" / "unauthorized" | `FIDES_MIDDLEWARE_KEY` wallet has no testnet MON, or isn't the wallet authorized as `MIDDLEWARE` during deploy. |
+| Task writes fail "insufficient funds" / "unauthorized" | `fedis_MIDDLEWARE_KEY` wallet has no testnet MON, or isn't the wallet authorized as `MIDDLEWARE` during deploy. |
 | `forge` / `anvil` not found | Install Foundry: `curl -L https://foundry.paradigm.xyz | bash && foundryup` |
 
 ---

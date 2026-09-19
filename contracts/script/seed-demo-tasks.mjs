@@ -26,10 +26,10 @@ function arg(flag, fallback) {
   return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 }
 
-const RPC = arg("--rpc", process.env.FIDES_RPC_URL ?? "http://127.0.0.1:8545");
-const CHAIN_ID = Number(arg("--chain", process.env.FIDES_CHAIN_ID ?? "31337"));
+const RPC = arg("--rpc", process.env.fedis_RPC_URL ?? "http://127.0.0.1:8545");
+const CHAIN_ID = Number(arg("--chain", process.env.fedis_CHAIN_ID ?? "31337"));
 const PK =
-  process.env.FIDES_MIDDLEWARE_KEY ??
+  process.env.fedis_MIDDLEWARE_KEY ??
   process.env.PRIVATE_KEY ??
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
@@ -39,12 +39,12 @@ const fail = (...a) => {
   process.exit(1);
 };
 
-const DEMO_TASK_SLASHED = keccak256(toBytes("fides.demo.task.slashed"));
-const DEMO_TASK_RELEASED = keccak256(toBytes("fides.demo.task.released"));
-const DEMO_TASK_INFLIGHT = keccak256(toBytes("fides.demo.task.inflight"));
+const DEMO_TASK_SLASHED = keccak256(toBytes("fedis.demo.task.slashed"));
+const DEMO_TASK_RELEASED = keccak256(toBytes("fedis.demo.task.released"));
+const DEMO_TASK_INFLIGHT = keccak256(toBytes("fedis.demo.task.inflight"));
 
 const FLAKY = keccak256(toBytes("flaky-scraper-v0"));
-const BUYER = privateKeyToAccount(keccak256(toBytes("fides.demo.trusted"))).address;
+const BUYER = privateKeyToAccount(keccak256(toBytes("fedis.demo.trusted"))).address;
 
 const PAYMENT = 100_000_000n;
 const BOND = 50_000_000n;
@@ -150,7 +150,7 @@ async function createIfNeeded(taskId, label) {
       MAX_COMP,
       deadline,
       0,
-      keccak256(toBytes("fides.demo.validation")),
+      keccak256(toBytes("fedis.demo.validation")),
     ],
   );
   return 1;
@@ -176,7 +176,7 @@ async function executeIfNeeded(taskId, label, minState) {
     taskPolicy,
     taskPolicyAbi,
     "markExecuted",
-    [taskId, keccak256(toBytes("fides.demo.result"))],
+    [taskId, keccak256(toBytes("fedis.demo.result"))],
   );
   return 3;
 }
