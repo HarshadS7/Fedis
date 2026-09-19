@@ -133,40 +133,40 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 ## 3. Person C — Frontend
 
 ### 3.1 Design system — lock before building screens (see §3.2 for why these values)
-- [ ] Define tokens as CSS custom properties in `globals.css` — dark-first, both modes declared
-- [ ] Surfaces: page `#0d0d0d`, card/chart `#1a1a19` (light: `#f9f9f7` / `#fcfcfb`)
-- [ ] Ink: primary `#ffffff`, secondary `#c3c2b7`, muted `#898781` (light: `#0b0b0b` / `#52514e` / `#898781`)
-- [ ] Hairlines: border `rgba(255,255,255,0.10)`, gridline `#2c2c2a`, baseline `#383835`
-- [ ] Status (fixed, never themed): good `#0ca30c`, warning `#fab219`, serious `#ec835a`, critical `#d03b3b`
-- [ ] Series (dark steps): slot 1 blue `#3987e5`, slot 2 orange `#d95926`, slot 3 aqua `#199e70`
-- [ ] Typeface: system sans only (`system-ui, -apple-system, "Segoe UI", sans-serif`) — no display or serif face
-- [ ] `font-variant-numeric: tabular-nums` **only** on aligned columns (tx tables, axis ticks) — not on hero numbers
-- [ ] 4px spacing scale; at most 2 type sizes per screen region
-- [ ] Build a tiny primitives set first: `Card`, `StatTile`, `StatusBadge`, `DataTable`, `AddressChip` — every screen composes these
+- [x] Define tokens as CSS custom properties in `globals.css` — dark-first, both modes declared
+- [x] Surfaces: page `#0d0d0d`, card/chart `#1a1a19` (light: `#f9f9f7` / `#fcfcfb`)
+- [x] Ink: primary `#ffffff`, secondary `#c3c2b7`, muted `#898781` (light: `#0b0b0b` / `#52514e` / `#898781`)
+- [x] Hairlines: border `rgba(255,255,255,0.10)`, gridline `#2c2c2a`, baseline `#383835`
+- [x] Status (fixed, never themed): good `#0ca30c`, warning `#fab219`, serious `#ec835a`, critical `#d03b3b`
+- [x] Series (dark steps): slot 1 blue `#3987e5`, slot 2 orange `#d95926`, slot 3 aqua `#199e70`
+- [x] Typeface: system sans only (`system-ui, -apple-system, "Segoe UI", sans-serif`) — no display or serif face
+- [x] `font-variant-numeric: tabular-nums` **only** on aligned columns (tx tables, axis ticks) — not on hero numbers
+- [x] 4px spacing scale; at most 2 type sizes per screen region
+- [x] Build a tiny primitives set first: `Card`, `StatTile`, `StatusBadge`, `DataTable`, `AddressChip` — every screen composes these
 
 ### 3.2 Anti-vibecode rules (bake into review, not taste)
-- [ ] No gradients, glassmorphism, or purple→blue "AI" wash
-- [ ] No decorative drop shadows; separation is hairlines + surface steps
-- [ ] No emoji as icons; status = icon **+ label**, never color alone
-- [ ] Never a dual-axis chart (two y-scales) — the single most common chart error
-- [ ] Sequential = one hue light→dark; diverging = two hues + neutral gray midpoint; never rainbow
-- [ ] Color follows the entity, never its rank — filtering must not repaint survivors
-- [ ] Text wears ink tokens, never the series color
+- [x] No gradients, glassmorphism, or purple→blue "AI" wash
+- [x] No decorative drop shadows; separation is hairlines + surface steps
+- [x] No emoji as icons; status = icon **+ label**, never color alone
+- [x] Never a dual-axis chart (two y-scales) — the single most common chart error
+- [x] Sequential = one hue light→dark; diverging = two hues + neutral gray midpoint; never rainbow
+- [x] Color follows the entity, never its rank — filtering must not repaint survivors
+- [x] Text wears ink tokens, never the series color
 - [ ] Thin marks: 2px lines, ≥8px markers, 4px rounded data-ends, 2px surface gap between adjacent fills, recessive grid
 - [ ] ≥2 series → legend always present; ≤4 series → also direct-labeled
 - [ ] Every chart has a table view (doubles as our receipts: real tx hashes)
-- [ ] No number on screen that isn't in B's API response
+- [x] No number on screen that isn't in B's API response (premium contrast card still seeded copy — wire `/api/premium`)
 
 ### 3.3 Data contract
-- [ ] `src/lib/types.ts` — B's actual response shapes, typed
-- [ ] `src/lib/api.ts` — one switch between mock and live; log `[api] MODE=mock GET /api/tasks/123 → 200 in 4ms`
-- [ ] Mock fixtures covering: clean agent, failing agent, in-flight task, slashed task
+- [x] `src/lib/types.ts` — B's actual response shapes, typed
+- [x] `src/lib/api.ts` — one switch between mock and live; log `[api] MODE=mock GET /api/vaults → 200 in 4ms`
+- [x] Mock fixtures covering: clean agent, failing agent, in-flight task, slashed task
 
-### 3.4 Dashboard 1 — Agent Risk Terminal
-- [ ] Stat tiles (not charts — these are single values): bond available, active exposure, required collateral
-- [ ] Success / failed task counts with status colors + labels
-- [ ] Recent validation events table (time, taskId, result, tx hash)
-- [ ] Empty state and error state both designed, not blank
+### 3.4 Dashboard 1 — Agent Risk Terminal (GO.md: one screen)
+- [x] Stat tiles (not charts — these are single values): total capital, agents covered, total slashed, tasks insured
+- [x] Agent vault DataTable: name, TVL, utilization, APY, risk, slashes
+- [x] Status badge on agents with slashes > 0 (icon + label)
+- [x] Empty state and error state both designed, not blank
 - [ ] Open in browser and actually look at it before ticking
 
 ### 3.5 Dashboard 2 — Protected Task Lifecycle
@@ -188,10 +188,10 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [ ] Table view with real tx hashes
 
 ### 3.7 Logging & demo-safety
-- [ ] `[api]` log per call: endpoint, mode, status, duration
+- [x] `[api]` log per call: endpoint, mode, status, duration
 - [ ] `[bench]` log per stream event
-- [ ] Fetch failure → full error logged **and** a visible UI error state (a blank panel is indistinguishable from a hung demo)
-- [ ] Dev status strip: API mode, chain, last successful fetch time
+- [x] Fetch failure → full error logged **and** a visible UI error state (a blank panel is indistinguishable from a hung demo)
+- [x] Dev status strip: API mode, chain, last successful fetch time
 
 ---
 
@@ -231,3 +231,4 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - 2026-09-19: Wrote `TEAM-PROMPTS.md` — per-person agent prompts with verify-first, research-don't-guess, logging, and checkpoint rules. Found the monskills load bug and the 600ms/400ms error while writing it.
 - 2026-09-19: Expanded this file to a granular working-app checklist; added a locked design-token set and anti-vibecode rules for the frontend, grounded in the dataviz skill's validated palette and form rules rather than taste.
 - 2026-09-19: Verified the inherited contracts track before building on it (TODO 1.1). All claims in `contracts/README.md` hold: 60/60 tests pass, `node export-abi.mjs` reproduces the committed ABIs with zero drift, and `Deploy.s.sol` + `Seed.s.sol` run clean against a fresh anvil producing byte-identical addresses to `deployments/31337.json`. Confirmed Monad testnet is chain 10143 and the canonical ERC-8004 registry still has no bytecode there. Nothing inherited is broken; the bonded-execution build starts from a green base.
+- 2026-09-19: Person C refactored frontend per GO.md — single Agent Risk Terminal, locked design tokens, VaultInfo types, mock/live `/api/vaults` client with fallback fixtures, StatTiles + DataTable + StatusBadge primitives. Removed `/lp`, `/demo`, old vibecode styling.
