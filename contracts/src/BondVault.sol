@@ -14,7 +14,7 @@ import {TaskPolicy} from "./TaskPolicy.sol";
 /// @notice Custody for the collateral an agent puts at risk on one protected task. The bond
 ///         is locked before work begins, returned in full when validation passes, and used
 ///         to compensate the buyer when it fails. This is the "skin in the game" half of
-///         Aegis; `TaskPolicy` holds the promise, this contract holds the money.
+///         Fedis; `TaskPolicy` holds the promise, this contract holds the money.
 ///
 /// @dev CUSTODY IS PER TASK, and that is a deliberate cost. Each bond gets its own
 ///      `VaultEscrow` clone rather than sharing one pooled balance.

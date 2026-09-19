@@ -1,6 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
-import { createPublicClient, defineChain, http, type Abi, type PublicClient } from "viem";
+import {
+  createPublicClient,
+  createWalletClient,
+  defineChain,
+  http,
+  type Abi,
+  type PublicClient,
+} from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 import { log } from "./log";
 
 export type ApiMode = "mock" | "live";
@@ -25,10 +33,38 @@ export function client(): PublicClient {
   return _client;
 }
 
+/**
+ * Write client. The middleware key is authorized on TaskPolicy and is BondVault's
+ * validation router, so it can drive the whole task lifecycle for the demo.
+ * Anvil account 0 by default — never a real key.
+ */
+const MIDDLEWARE_KEY = (process.env.FIDES_MIDDLEWARE_KEY ??
+  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80") as `0x${string}`;
+
+let _wallet: ReturnType<typeof createWalletClient> | null = null;
+export function wallet() {
+  if (!_wallet) {
+    _wallet = createWalletClient({
+      account: privateKeyToAccount(MIDDLEWARE_KEY),
+      chain: anvil,
+      transport: http(RPC_URL),
+    });
+  }
+  return _wallet;
+}
+
+export function middlewareAddress(): `0x${string}` {
+  return privateKeyToAccount(MIDDLEWARE_KEY).address;
+}
+
 const root = process.cwd();
 
+/**
+ * Statically scoped to contracts/ so the bundler traces only that subtree. A fully
+ * dynamic path here makes Turbopack trace the whole project into the server bundle.
+ */
 function readJson<T>(rel: string): T {
-  return JSON.parse(fs.readFileSync(path.join(root, rel), "utf8")) as T;
+  return JSON.parse(fs.readFileSync(path.join(root, "contracts", rel), "utf8")) as T;
 }
 
 export type Deployments = {
@@ -39,15 +75,17 @@ export type Deployments = {
   usdc: string;
   identityRegistry: string;
   middleware?: string;
+  taskPolicy?: string;
+  bondVault?: string;
 };
 
 let _deployments: Deployments | null | undefined;
 export function deployments(): Deployments | null {
   if (_deployments !== undefined) return _deployments;
   try {
-    _deployments = readJson<Deployments>(`contracts/deployments/${CHAIN_ID}.json`);
+    _deployments = readJson<Deployments>(`deployments/${CHAIN_ID}.json`);
     log.ok("chain", `loaded addresses for chain ${CHAIN_ID}`);
-  } catch (err) {
+  } catch {
     log.warn("chain", `no deployments/${CHAIN_ID}.json - live mode unavailable`);
     _deployments = null;
   }
@@ -55,8 +93,16 @@ export function deployments(): Deployments | null {
 }
 
 const _abis: Record<string, Abi> = {};
-export function abi(name: "AgentVault" | "PremiumEngine" | "UserUnderwriting"): Abi {
-  if (!_abis[name]) _abis[name] = readJson<Abi>(`contracts/abi/${name}.json`);
+export type ContractName =
+  | "AgentVault"
+  | "PremiumEngine"
+  | "UserUnderwriting"
+  | "TaskPolicy"
+  | "BondVault"
+  | "MockUSDC";
+
+export function abi(name: ContractName): Abi {
+  if (!_abis[name]) _abis[name] = readJson<Abi>(`abi/${name}.json`);
   return _abis[name];
 }
 

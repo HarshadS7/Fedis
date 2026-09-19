@@ -1,0 +1,44 @@
+{
+  "measuredAt": "2026-09-19T11:29:07.455Z",
+  "rpc": "http://127.0.0.1:8547",
+  "chainId": 31337,
+  "walletCount": 20,
+  "agentVault": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+  "note": "Measured on this node. Monad published specs (400ms blocks / 800ms finality) are separate and not included here.",
+  "independent": {
+    "workload": "A) INDEPENDENT — N wallets, N different vaults (disjoint storage)",
+    "txCount": 20,
+    "submitted": 20,
+    "settled": 20,
+    "reverted": 0,
+    "wallMs": 4162,
+    "submittedMs": 113,
+    "blocksUsed": 1,
+    "blockRange": "53..53",
+    "txPerBlock": 20,
+    "p50InclusionMs": 4154,
+    "p95InclusionMs": 4160,
+    "totalGas": 3200596,
+    "blocks": [
+      53
+    ]
+  },
+  "conflicting": {
+    "workload": "B) CONFLICTING — N wallets, ONE shared vault (same slots every tx)",
+    "txCount": 20,
+    "submitted": 20,
+    "settled": 20,
+    "reverted": 0,
+    "wallMs": 4144,
+    "submittedMs": 69,
+    "blocksUsed": 1,
+    "blockRange": "57..57",
+    "txPerBlock": 20,
+    "p50InclusionMs": 4136,
+    "p95InclusionMs": 4143,
+    "totalGas": 1575880,
+    "blocks": [
+      57
+    ]
+  }
+}

@@ -1,18 +1,18 @@
-# Aegis: Economic Liability & Bonded Execution for the Agentic Web
+# Fedis: Economic Liability & Bonded Execution for the Agentic Web
 
 ## 1. Executive Summary
-The Agentic Web is expanding through standards and protocols such as **x402** for machine-native payments and **ERC-8004** for agent identity, reputation, and validation. The missing piece Aegis targets is a native **economic enforcement layer**: when an autonomous agent accepts a paid task, there needs to be collateral and an enforceable consequence if it fails a predefined obligation.
+The Agentic Web is expanding through standards and protocols such as **x402** for machine-native payments and **ERC-8004** for agent identity, reputation, and validation. The missing piece Fedis targets is a native **economic enforcement layer**: when an autonomous agent accepts a paid task, there needs to be collateral and an enforceable consequence if it fails a predefined obligation.
 
-Aegis does not try to make a smart contract decide whether an AI “hallucinated.” Instead, each protected task declares a **machine-checkable success predicate** and a settlement policy before execution. An agent locks a bond to accept the task; objective validation releases the bond on success or can trigger compensation/slashing on failure. This makes liability enforceable at protocol level rather than relying on subjective post-hoc judgments.
+Fedis does not try to make a smart contract decide whether an AI “hallucinated.” Instead, each protected task declares a **machine-checkable success predicate** and a settlement policy before execution. An agent locks a bond to accept the task; objective validation releases the bond on success or can trigger compensation/slashing on failure. This makes liability enforceable at protocol level rather than relying on subjective post-hoc judgments.
 
-**Aegis** is designed natively for **Monad**. Its task, bond, and policy state are partitioned so unrelated agent tasks can operate on independent storage. This creates a workload that is naturally compatible with Monad's optimistic parallel execution, allowing large numbers of independent liability events to be processed concurrently.
+**Fedis** is designed natively for **Monad**. Its task, bond, and policy state are partitioned so unrelated agent tasks can operate on independent storage. This creates a workload that is naturally compatible with Monad's optimistic parallel execution, allowing large numbers of independent liability events to be processed concurrently.
 
-The long-term product is not merely “AI insurance.” Aegis is an **economic enforcement layer for autonomous agents**. Insurance and pooled underwriting can later be built on top of the bonded execution primitive.
+The long-term product is not merely “AI insurance.” Fedis is an **economic enforcement layer for autonomous agents**. Insurance and pooled underwriting can later be built on top of the bonded execution primitive.
 
 ---
 
 ## 2. The Core Protocol Mechanics
-Aegis operates around a protected autonomous task:
+Fedis operates around a protected autonomous task:
 
 ### A. Agent Side — Bonded Execution
 Agents must provide economic skin in the game before accepting a protected task.
@@ -26,7 +26,7 @@ Agents must provide economic skin in the game before accepting a protected task.
 The hackathon MVP should use **bonded execution**, not full capital-pool insurance. This dramatically reduces protocol complexity while preserving the key liability primitive.
 
 ### B. Task Policy & Deterministic Validation
-Aegis must define what “failure” means before money is at risk.
+Fedis must define what “failure” means before money is at risk.
 
 Each protected task stores:
 
@@ -54,10 +54,10 @@ Examples of machine-checkable success predicates:
 * a measurable latency / availability condition is satisfied;
 * an authorized validator attests that a predefined objective condition passed.
 
-**Important constraint:** Aegis does not claim that an LLM can be an objective truth oracle. Subjective AI-quality disputes are a later validation market problem. The hackathon demo should use deterministic or cryptographically verifiable predicates.
+**Important constraint:** Fedis does not claim that an LLM can be an objective truth oracle. Subjective AI-quality disputes are a later validation market problem. The hackathon demo should use deterministic or cryptographically verifiable predicates.
 
 ### C. Reputation / Risk Layer — Lightweight MVP
-Aegis can maintain an on-chain risk profile from observable economic outcomes rather than arbitrary “CIBIL” thresholds.
+Fedis can maintain an on-chain risk profile from observable economic outcomes rather than arbitrary “CIBIL” thresholds.
 
 Track signals such as:
 
@@ -73,7 +73,7 @@ A simple transparent risk score can influence required bond or premium. Avoid pr
 Sybil resistance comes from **economic cost and historical track record**: a fresh identity has little useful history and may need a larger bond or less favorable terms until it builds credible execution history.
 
 ### D. Future Insurance Layer
-Once bonded execution works, Aegis can introduce the original underwriting concept as a second layer.
+Once bonded execution works, Fedis can introduce the original underwriting concept as a second layer.
 
 * Liquidity Providers deposit USDC into **isolated Agent Risk Vaults**.
 * LPs can underwrite an agent's residual liability instead of requiring the agent to supply the full bond.
@@ -86,7 +86,7 @@ This preserves the original insurance thesis without making the 7-hour MVP depen
 ---
 
 ## 3. Why Monad? (The Architectural Moat)
-Aegis is not using Monad merely because transactions are fast. The protocol is deliberately structured as a **low-contention workload**.
+Fedis is not using Monad merely because transactions are fast. The protocol is deliberately structured as a **low-contention workload**.
 
 The main state is partitioned by task / agent rather than forcing every transaction through one global treasury counter.
 
@@ -106,23 +106,23 @@ The demo reports **measured inclusion / confirmation / finality times and transa
 
 The key claim is therefore:
 
-> **Aegis designs machine-commerce liability events so that the workload is naturally parallelizable on Monad.**
+> **Fedis designs machine-commerce liability events so that the workload is naturally parallelizable on Monad.**
 
 ---
 
 ## 4. Revenue & Monetization Model
 The long-term business can evolve in layers instead of depending on LP capital from day one.
 
-1. **Execution / Origination Fee:** Aegis takes a small percentage of protected task premiums or transaction value. For example, a configurable protocol fee can be charged when a policy is created or settled.
+1. **Execution / Origination Fee:** Fedis takes a small percentage of protected task premiums or transaction value. For example, a configurable protocol fee can be charged when a policy is created or settled.
 2. **Underwriting Marketplace:** In the future, LPs can underwrite agent liability through isolated vaults and earn premiums for capital actually exposed to risk.
-3. **Risk & Enforcement API:** x402 facilitators and agent platforms can query Aegis for an agent's observed failure history, current collateral, active exposure, and enforcement status.
+3. **Risk & Enforcement API:** x402 facilitators and agent platforms can query Fedis for an agent's observed failure history, current collateral, active exposure, and enforcement status.
 4. **Enterprise Agent Controls:** A future B2B product can provide policy templates, spending limits, task-level guarantees, audit trails, and enforcement for fleets of autonomous agents.
 
 The business thesis is:
 
 > **As agents transact more autonomously, economic guarantees become infrastructure.**
 
-Aegis can monetize the creation, enforcement, and underwriting of those guarantees.
+Fedis can monetize the creation, enforcement, and underwriting of those guarantees.
 
 ---
 
@@ -162,18 +162,18 @@ Build a thin middleware layer around the payment flow.
 **The Flow:**
 
 1. Buyer Agent creates a protected task request through the middleware.
-2. Aegis converts the request into a structured task policy.
+2. Fedis converts the request into a structured task policy.
 3. The selected Agent accepts the task and locks the required bond.
 4. x402 handles the underlying payment authorization / settlement flow.
 5. The Agent executes the task off-chain.
 6. The result and validation evidence are submitted.
-7. Aegis releases the bond on success or executes the predefined compensation/slashing path on failure.
+7. Fedis releases the bond on success or executes the predefined compensation/slashing path on failure.
 
 The key separation is:
 
 * **x402:** moves value / handles machine-native payment.
 * **ERC-8004:** supplies the agent identity / reputation ecosystem.
-* **Aegis:** adds collateral, liability, and economic enforcement.
+* **Fedis:** adds collateral, liability, and economic enforcement.
 
 ### Phase 3: Frontend & Hackathon Visualizer (React + Tailwind)
 
@@ -215,14 +215,14 @@ Run a controlled benchmark with many independent tasks.
 * Fire transactions concurrently from the client.
 * Separately run a conflicting workload against the same state.
 * Display transaction inclusion, confirmation / finality observations, and successful settlement counts.
-* Visually group the independent transactions to show that Aegis's state partitioning is designed for parallel execution.
+* Visually group the independent transactions to show that Fedis's state partitioning is designed for parallel execution.
 
 The benchmark must measure what actually happened. `Promise.all()` is only a client-side concurrency mechanism; it is not itself evidence of blockchain parallel execution.
 
 ---
 
 ## 6. The Pitch (60-Second TL;DR for Judges)
-> “AI agents can identify each other and pay each other, but autonomous commerce still has a missing primitive: **who bears the loss when an agent fails a paid task?** x402 moves the payment. ERC-8004 helps establish agent identity and reputation. Aegis adds the economic enforcement layer. Before a protected task executes, the agent locks collateral against a machine-checkable success policy. If the task passes, the bond is released. If the predefined condition fails, Aegis can automatically slash collateral and compensate the buyer. We designed task and bond state to minimize contention, so high-frequency agent commerce can map naturally onto Monad’s parallel execution. The long-term protocol is an underwriting marketplace for autonomous agents; the hackathon MVP proves the underlying liability primitive.”
+> “AI agents can identify each other and pay each other, but autonomous commerce still has a missing primitive: **who bears the loss when an agent fails a paid task?** x402 moves the payment. ERC-8004 helps establish agent identity and reputation. Fedis adds the economic enforcement layer. Before a protected task executes, the agent locks collateral against a machine-checkable success policy. If the task passes, the bond is released. If the predefined condition fails, Fedis can automatically slash collateral and compensate the buyer. We designed task and bond state to minimize contention, so high-frequency agent commerce can map naturally onto Monad’s parallel execution. The long-term protocol is an underwriting marketplace for autonomous agents; the hackathon MVP proves the underlying liability primitive.”
 
 ---
 
@@ -243,4 +243,4 @@ Expose standardized risk / collateral / enforcement information to agent marketp
 
 The long-term thesis remains:
 
-> **Identity tells you who an agent is. Payments move the money. Reputation tells you what happened before. Aegis makes future obligations economically enforceable.**
+> **Identity tells you who an agent is. Payments move the money. Reputation tells you what happened before. Fedis makes future obligations economically enforceable.**

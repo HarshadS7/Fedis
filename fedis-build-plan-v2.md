@@ -1,4 +1,4 @@
-# Fedis (Aegis) — 3-Person Build Plan v2 (Bonded Execution Pivot)
+# Fedis — 3-Person Build Plan v2 (Bonded Execution Pivot)
 
 *2026-09-19*
 

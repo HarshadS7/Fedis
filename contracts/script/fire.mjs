@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Aegis parallelism benchmark.
+// Fedis parallelism benchmark.
 //
 //   node contracts/script/fire.mjs [--n 50] [--rpc http://127.0.0.1:8545] [--out run.json]
 //
