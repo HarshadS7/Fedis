@@ -51,7 +51,7 @@ function baseTask(
     state,
     paymentAmount: usdc(100),
     requiredBond: usdc(50),
-    maxCompensation: usdc(45),
+    maxCompensation: usdc(40),
     steps,
     movements,
     outcome,

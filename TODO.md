@@ -193,7 +193,7 @@ proven instead by the storage-access tests in `Integration.t.sol`.
 - [x] Mock fixtures covering: clean agent, failing agent, in-flight task, slashed task
 
 ### 3.4 Dashboard 1 — Agent Risk Terminal (GO.md: one screen)
-[~] Reframe the frontend as a public Fedis editorial landing page with the risk terminal as the flagship proof surface.
+[x] Reframe the frontend as a public Fedis editorial landing page with the risk terminal as the flagship proof surface.
 - [x] Stat tiles (not charts — these are single values): total capital, agents covered, total slashed, tasks insured
 - [x] Agent vault DataTable: name, TVL, utilization, APY, risk, slashes
 - [x] Status badge on agents with slashes > 0 (icon + label)
@@ -231,17 +231,16 @@ proven instead by the storage-access tests in `Integration.t.sol`.
 
 - [x] ✅ **Sync 1 — interfaces locked.** All 8 ABIs exported, shapes published (`API.md`), typed in `src/lib/types.ts`.
 - [x] ✅ **Sync 2 — real chain behind the API.** Deployed + seeded on :8545; every read endpoint returns `mode: "live"`.
-- [~] **Sync 3 — full lifecycle green.** Pass **and** slash paths verified on-chain via the API. Remaining: surface it in C's lifecycle dashboard (§3.5, not built).
-- [ ] **Sync 3 — full lifecycle green.** Pass path *and* slash path, on a real chain, visible in C's lifecycle dashboard.
+- [x] **Sync 3 — full lifecycle green.** Pass **and** slash paths verified on-chain via the API; lifecycle panel reads live `GET /api/tasks/:id` with event-derived tx hashes (`npm run seed:tasks`).
 - [ ] **Sync 4 — benchmark + rehearsal.** Defensible measured numbers; demo click-path rehearsed and timed.
 
 ---
 
 ## 5. Demo prep
 
-- [ ] Pre-seeded demo state so nothing is created live that could fail
+- [x] Pre-seeded demo state so nothing is created live that could fail (`npm run seed:tasks` + `DEMO.md` runbook)
 - [ ] Rehearse the slash path specifically — it's the one judges care about and the one most likely untested
-- [ ] Written list of what is real vs simulated (x402 subset, mock registry) — say it before they ask
+- [x] Written list of what is real vs simulated (x402 subset, mock registry) — `DEMO.md`
 - [ ] Pitch copy purged of: "600ms", "insurance", "CIBIL", LP vaults, and any uncalibrated magic number
 - [ ] Fallback: recorded run of the benchmark in case testnet misbehaves live
 - [ ] 60-second script from `project_plan.md` §6, assigned across three speakers, handoffs rehearsed
@@ -282,3 +281,4 @@ proven instead by the storage-access tests in `Integration.t.sol`.
 - 2026-09-19: Person C finished benchmark SSE stream (`GET /api/demo/fire/stream`), tx receipts table, connection-state badges, Turbopack-safe `run-script.ts` spawn; `npm run build` green.
 - 2026-09-19: Person C shipped premium editorial landing page at `/`, moved Agent Risk Terminal to `/terminal` with static product mockups and warm off-white aesthetic.
 - 2026-09-19: Person C unified terminal with landing design system — light editorial tokens, pill buttons, restrained badges, dark inset chart panel, shared CSS variables.
+- 2026-09-19: Wired `GET /api/tasks/:id` to live TaskPolicy + BondVault reads with on-chain event tx hashes; `seed-demo-tasks.mjs` seeds slash/release/in-flight demos; `DEMO.md` + `npm run demo:check` runbook.

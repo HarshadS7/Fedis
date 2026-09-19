@@ -254,6 +254,8 @@ export async function fetchTask(taskId: string): Promise<FetchTaskResult> {
     const body = (await res.json()) as {
       mode: ApiMode;
       task: FetchTaskResult["task"];
+      note?: string;
+      degraded?: boolean;
     };
     logApi(body.mode, "GET", path, 200, durationMs);
     return {
@@ -261,6 +263,7 @@ export async function fetchTask(taskId: string): Promise<FetchTaskResult> {
       mode: body.mode,
       fetchedAt: new Date().toISOString(),
       durationMs,
+      error: body.degraded ? body.note : undefined,
     };
   } catch (error) {
     const durationMs = Date.now() - started;

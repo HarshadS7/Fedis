@@ -6,16 +6,13 @@ import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { StatsRow, TerminalSection } from "@/components/ui/terminal-section";
 import { fetchTask } from "@/lib/api";
+import { explorerTxUrl } from "@/lib/explorer";
 import { formatAddress, formatUsdc } from "@/lib/format";
 import {
   DEMO_TASK_OPTIONS,
   DEMO_TASK_SLASHED,
 } from "@/lib/mockTasks";
 import type { FetchTaskResult, MoneyMovement, TaskStep } from "@/lib/types";
-
-function explorerTxUrl(hash: string): string {
-  return `https://explorer.monad.xyz/tx/${hash}`;
-}
 
 function StepNode({ step }: { step: TaskStep }) {
   const active =
@@ -36,14 +33,23 @@ function StepNode({ step }: { step: TaskStep }) {
         <span className="mt-1 block text-[10px]">pending</span>
       )}
       {step.txHash ? (
-        <a
-          href={explorerTxUrl(step.txHash)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 block font-mono text-[10px] text-[var(--ink-secondary)] hover:text-[var(--accent)]"
-        >
-          {formatAddress(step.txHash, 8, 6)}
-        </a>
+        explorerTxUrl(step.txHash) ? (
+          <a
+            href={explorerTxUrl(step.txHash)!}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 block font-mono text-[10px] text-[var(--ink-secondary)] hover:text-[var(--accent)]"
+          >
+            {formatAddress(step.txHash, 8, 6)}
+          </a>
+        ) : (
+          <span
+            className="mt-2 block font-mono text-[10px] text-[var(--ink-secondary)]"
+            title={step.txHash}
+          >
+            {formatAddress(step.txHash, 8, 6)}
+          </span>
+        )
       ) : null}
     </div>
   );
@@ -120,7 +126,15 @@ export function TaskLifecyclePanel() {
       ) : null}
 
       {!loading && result?.error ? (
-        <p className="mb-4 text-sm text-[var(--status-warning)]">{result.error}</p>
+        <p className="mb-4 text-sm text-[var(--status-warning)]">
+          {result.error}
+          {result.mode !== "live" ? (
+            <span className="block mt-1 text-[var(--ink-muted)]">
+              Run <code className="text-xs">npm run seed:tasks</code> after deploy to
+              seed on-chain demo tasks.
+            </span>
+          ) : null}
+        </p>
       ) : null}
 
       {!loading && result ? (
@@ -135,6 +149,10 @@ export function TaskLifecyclePanel() {
                     : "warning"
               }
               label={result.task.state.toUpperCase()}
+            />
+            <StatusBadge
+              tone={result.mode === "live" ? "good" : "warning"}
+              label={result.mode === "live" ? "LIVE CHAIN" : "FIXTURE"}
             />
             <span className="text-sm text-[var(--ink-secondary)]">
               Agent: {result.task.agentName}
