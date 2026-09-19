@@ -12,13 +12,14 @@ A **bonded-execution liability layer for AI agents on Monad**. Buyers create pro
 2. [Prerequisites](#prerequisites)
 3. [Quick start — app in mock mode (no chain needed)](#quick-start--app-in-mock-mode-no-chain-needed)
 4. [Full demo — local chain with Anvil](#full-demo--local-chain-with-anvil)
-5. [Environment variables](#environment-variables)
-6. [Deploying to Monad testnet](#deploying-to-monad-testnet)
-7. [Deploying to Vercel](#deploying-to-vercel)
-8. [API](#api)
-9. [Project layout](#project-layout)
-10. [What is real vs simulated](#what-is-real-vs-simulated)
-11. [Troubleshooting](#troubleshooting)
+5. [Deployed contracts](#deployed-contracts)
+6. [Environment variables](#environment-variables)
+7. [Deploying to Monad testnet](#deploying-to-monad-testnet)
+8. [Deploying to Vercel](#deploying-to-vercel)
+9. [API](#api)
+10. [Project layout](#project-layout)
+11. [What is real vs simulated](#what-is-real-vs-simulated)
+12. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -95,6 +96,25 @@ node contracts/script/fire.mjs --n 50 --rpc http://127.0.0.1:8547
 ```
 
 Writes results to `contracts/bench-latest.json`, which the app uses as the "last measured run" fallback.
+
+---
+
+## Deployed contracts
+
+Source of truth: `contracts/deployments/<chainId>.json` — the app reads addresses off disk at runtime, never hardcodes them. The table below is the committed **local (Anvil, chain 31337)** deployment. These addresses are deterministic: running `Deploy.s.sol` against a fresh Anvil reproduces them byte-for-byte.
+
+| Contract | Address (Anvil / 31337) | Role |
+|---|---|---|
+| `AgentVault` | `0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9` | per-agent vaults, LP shares, kinked curve, slashing |
+| `BondVault` | `0x0165878A594ca255338adfa4d48449f69242Eb8F` | task bond lock / release / slash |
+| `TaskPolicy` | `0x5FC8d32690cc91D4c39d9d3abcBD16989F875707` | protected-task state machine |
+| `PremiumEngine` | `0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9` | bilateral premium quotes |
+| `UserUnderwriting` | `0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0` | buyer trust scores |
+| `MockUSDC` | `0x5FbDB2315678afecb367f032d93F642f64180aa3` | 6-decimal settlement token (open faucet) |
+| `IdentityRegistry` | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` | ERC-8004 read surface (mock — testnet has no registry bytecode) |
+| Middleware signer | `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266` | anvil account 0 = default `FIDES_MIDDLEWARE_KEY` |
+
+**Monad testnet:** after a testnet deploy, the addresses land in `contracts/deployments/10143.json` — they will differ from the table. Commit that file and the app picks them up automatically; the table here stays the local reference (see [Deploying to Monad testnet](#deploying-to-monad-testnet)).
 
 ---
 

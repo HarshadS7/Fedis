@@ -258,6 +258,7 @@ proven instead by the storage-access tests in `Integration.t.sol`.
 
 ## Done log
 
+- 2026-09-19: Wrote a complete run-through `README.md` (mock quick-start, local Anvil live demo, env-var table, Monad testnet deploy, Vercel deploy with `.env.vercel` import file + security rules, API list, layout, real-vs-simulated, troubleshooting). Created `.env.vercel` (gitignored, not auto-loaded by Next — safe to paste into Vercel Project Settings).
 - 2026-09-19 — Reframed the frontend as a premium Fedis landing page with a code-native risk terminal showcase, responsive editorial sections, and generated hero texture.
 - 2026-09-19: Renamed all "Aegis" references to "Fedis" across src, contracts, and docs; renamed `public/images/aegis-hero-texture.png` → `fedis-hero-texture.png`.
 
