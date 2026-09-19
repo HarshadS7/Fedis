@@ -28,7 +28,7 @@ export function AddressChip({
       type="button"
       onClick={() => void copy()}
       title={address}
-      className="inline-flex items-center gap-2 rounded border border-[var(--border)] px-2 py-1 text-xs text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+      className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-3 py-1 text-xs text-[var(--ink-secondary)] transition-colors hover:border-[var(--ink-primary)] hover:text-[var(--ink-primary)]"
     >
       {label ? (
         <span className="text-[var(--ink-muted)]">{label}</span>

@@ -2,25 +2,29 @@ type StatusTone = "good" | "warning" | "serious" | "critical";
 
 const toneStyles: Record<
   StatusTone,
-  { color: string; symbol: string; label: string }
+  { color: string; bg: string; symbol: string; label: string }
 > = {
   good: {
     color: "var(--status-good)",
+    bg: "rgba(12, 163, 12, 0.08)",
     symbol: "✓",
     label: "OK",
   },
   warning: {
     color: "var(--status-warning)",
+    bg: "rgba(184, 134, 11, 0.08)",
     symbol: "!",
     label: "WARN",
   },
   serious: {
     color: "var(--status-serious)",
+    bg: "rgba(196, 92, 42, 0.08)",
     symbol: "▲",
     label: "SLASHED",
   },
   critical: {
     color: "var(--status-critical)",
+    bg: "rgba(208, 59, 59, 0.08)",
     symbol: "✕",
     label: "CRITICAL",
   },
@@ -38,10 +42,10 @@ export function StatusBadge({
 
   return (
     <span
-      className="inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs"
+      className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
       style={{
         color: style.color,
-        borderColor: style.color,
+        background: style.bg,
       }}
     >
       <span aria-hidden="true">{style.symbol}</span>

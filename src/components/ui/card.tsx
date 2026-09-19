@@ -10,11 +10,11 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section
-      className={`rounded border border-[var(--border)] bg-[var(--surface-card)] p-4 ${className}`}
-    >
+    <section className={`surface-card rounded-xl p-5 sm:p-6 ${className}`}>
       {title ? (
-        <h2 className="mb-3 text-sm text-[var(--ink-secondary)]">{title}</h2>
+        <h2 className="mb-4 text-sm font-medium tracking-[-0.01em] text-[var(--ink-secondary)]">
+          {title}
+        </h2>
       ) : null}
       {children}
     </section>

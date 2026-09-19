@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Fides — Agent Risk Terminal",
+  title: {
+    default: "Fides",
+    template: "%s — Fides",
+  },
   description:
-    "Economic enforcement and agent vault risk dashboard for the agentic web.",
+    "Economic enforcement for autonomous agents — bonded liability, on-chain slashing, and risk visibility on Monad.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

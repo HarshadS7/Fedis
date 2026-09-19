@@ -6,10 +6,13 @@ import { DevStatusStrip } from "@/components/dev-status-strip";
 import { ParallelismPanel } from "@/components/parallelism-panel";
 import { PremiumContrastCard } from "@/components/premium-contrast-card";
 import { TaskLifecyclePanel } from "@/components/task-lifecycle-panel";
-import { Card } from "@/components/ui/card";
 import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
-import { StatTile } from "@/components/ui/stat-tile";
 import { StatusBadge } from "@/components/ui/status-badge";
+import {
+  StatsRow,
+  TerminalDivider,
+  TerminalSection,
+} from "@/components/ui/terminal-section";
 import { fetchVaults } from "@/lib/api";
 import { formatBps, formatInteger, formatUsdc } from "@/lib/format";
 import type { FetchVaultsResult, VaultInfo } from "@/lib/types";
@@ -59,7 +62,7 @@ export function AgentRiskTerminal() {
         key: "name",
         header: "Agent",
         render: (vault) => (
-          <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-3">
             <span>{vault.agentName}</span>
             {Number(vault.slashCount) > 0 ? (
               <StatusBadge tone="serious" label="SLASHED" />
@@ -105,7 +108,15 @@ export function AgentRiskTerminal() {
 
   return (
     <AppShell>
-      <div className="flex flex-col gap-4">
+      <header className="pb-10">
+        <p className="section-label mb-2">Live dashboard</p>
+        <h1 className="text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">
+          Agent Risk Terminal
+        </h1>
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--ink-muted)] sm:text-base">
+          Vault liability, slash history, task lifecycle, and Monad parallelism —
+          every number from the API.
+        </p>
         {result ? (
           <DevStatusStrip
             mode={result.mode}
@@ -119,49 +130,54 @@ export function AgentRiskTerminal() {
             refreshing={loading}
           />
         ) : null}
+      </header>
 
-        {loading ? (
-          <Card>
-            <p className="text-sm text-[var(--ink-secondary)]">
-              Loading vault data…
-            </p>
-          </Card>
-        ) : null}
+      {loading ? (
+        <p className="text-sm text-[var(--ink-muted)]">Loading vault data…</p>
+      ) : null}
 
-        {!loading && result?.error ? (
-          <Card>
-            <p className="text-sm text-[var(--status-warning)]">
-              {result.error}
-            </p>
-          </Card>
-        ) : null}
+      {!loading && result?.error ? (
+        <p className="text-sm text-[var(--status-warning)]">{result.error}</p>
+      ) : null}
 
-        {!loading && stats ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatTile label="Total capital underwritten" value={stats.totalCapital} />
-            <StatTile label="Agents covered" value={stats.agentsCovered} />
-            <StatTile label="Total slashed (events)" value={stats.totalSlashed} />
-            <StatTile label="Tasks insured" value={stats.tasksInsured} />
-          </div>
-        ) : null}
+      {!loading && stats ? (
+        <StatsRow
+          items={[
+            { label: "Total capital", value: stats.totalCapital },
+            { label: "Agents covered", value: stats.agentsCovered },
+            { label: "Total slashed", value: stats.totalSlashed },
+            { label: "Tasks insured", value: stats.tasksInsured },
+          ]}
+        />
+      ) : null}
 
-        {!loading && result ? (
-          <Card title="Agent vaults">
+      {!loading && result ? (
+        <>
+          <TerminalDivider />
+          <TerminalSection
+            label="01"
+            title="Agent vaults"
+            description="TVL, utilization, APY, risk in basis points, and slash count per agent."
+          >
             <DataTable
+              flat
               columns={columns}
               rows={result.vaults}
               rowKey={(vault) => vault.agentId}
               emptyMessage="No agent vaults returned from the API."
             />
-          </Card>
-        ) : null}
+          </TerminalSection>
 
-        {!loading && result ? <TaskLifecyclePanel /> : null}
+          <TerminalDivider />
+          <TaskLifecyclePanel />
 
-        {!loading && result ? <PremiumContrastCard /> : null}
+          <TerminalDivider />
+          <PremiumContrastCard />
 
-        {!loading && result ? <ParallelismPanel /> : null}
-      </div>
+          <TerminalDivider />
+          <ParallelismPanel />
+        </>
+      ) : null}
     </AppShell>
   );
 }

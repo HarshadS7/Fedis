@@ -12,29 +12,29 @@ export function DataTable<T>({
   rows,
   rowKey,
   emptyMessage,
+  flat = false,
 }: {
   columns: DataTableColumn<T>[];
   rows: T[];
   rowKey: (row: T) => string;
   emptyMessage: string;
+  flat?: boolean;
 }) {
   if (rows.length === 0) {
     return (
-      <div className="rounded border border-[var(--border)] bg-[var(--surface-card)] p-8 text-center text-sm text-[var(--ink-muted)]">
-        {emptyMessage}
-      </div>
+      <p className="py-8 text-sm text-[var(--ink-muted)]">{emptyMessage}</p>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded border border-[var(--border)] bg-[var(--surface-card)]">
+    <div className={`overflow-x-auto ${flat ? "" : "rounded-lg border border-[var(--border)]"}`}>
       <table className="w-full min-w-[720px] border-collapse text-sm">
         <thead>
-          <tr className="border-b border-[var(--gridline)]">
+          <tr className="border-b border-[var(--border)]">
             {columns.map((column) => (
               <th
                 key={column.key}
-                className={`px-4 py-3 font-normal text-[var(--ink-muted)] ${
+                className={`pb-3 font-normal text-[var(--ink-muted)] ${
                   column.align === "right" ? "text-right" : "text-left"
                 }`}
               >
@@ -52,7 +52,7 @@ export function DataTable<T>({
               {columns.map((column) => (
                 <td
                   key={column.key}
-                  className={`px-4 py-3 text-[var(--ink-primary)] ${
+                  className={`py-3.5 text-[var(--ink-primary)] ${
                     column.align === "right"
                       ? "text-right tabular-nums"
                       : "text-left"

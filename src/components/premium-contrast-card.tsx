@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { AddressChip } from "@/components/ui/address-chip";
-import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { TerminalSection } from "@/components/ui/terminal-section";
 import { fetchPremiumContrast } from "@/lib/api";
 import { DEMO_FRAUDSTER, DEMO_TRUSTED } from "@/lib/mock";
 import { formatBps, formatUsdc } from "@/lib/format";
@@ -31,48 +31,49 @@ export function PremiumContrastCard() {
 
   if (loading) {
     return (
-      <Card title="Premium contrast">
-        <p className="text-sm text-[var(--ink-secondary)]">
-          Loading premium quotes…
-        </p>
-      </Card>
+      <TerminalSection label="03" title="Premium contrast">
+        <p className="text-sm text-[var(--ink-muted)]">Loading premium quotes…</p>
+      </TerminalSection>
     );
   }
 
   if (!trusted || !flagged) {
     return (
-      <Card title="Premium contrast">
+      <TerminalSection label="03" title="Premium contrast">
         <p className="text-sm text-[var(--status-warning)]">
           Premium quotes unavailable.
         </p>
-      </Card>
+      </TerminalSection>
     );
   }
 
   const error = trusted.error ?? flagged.error;
 
   return (
-    <Card title="Premium contrast">
-      <p className="mb-4 text-sm text-[var(--ink-secondary)]">
-        On a {TASK_LABEL} task against{" "}
-        <span className="text-[var(--ink-primary)]">flaky-scraper-v0</span> —
-        same agent risk, different buyer trust scores.
-      </p>
-
-      <div className="mb-4 flex flex-wrap gap-2">
+    <TerminalSection
+      label="03"
+      title="Premium contrast"
+      description={`On a ${TASK_LABEL} task against flaky-scraper-v0 — same agent risk, different buyer trust scores.`}
+    >
+      <div className="mb-8 flex flex-wrap gap-2">
         <AddressChip address={DEMO_TRUSTED} label="Trusted" />
         <AddressChip address={DEMO_FRAUDSTER} label="Flagged" />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-10 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-[var(--border)]">
         <QuotePanel title="Trusted buyer" tone="good" quote={trusted} />
-        <QuotePanel title="Flagged buyer" tone="serious" quote={flagged} />
+        <QuotePanel
+          title="Flagged buyer"
+          tone="serious"
+          quote={flagged}
+          className="sm:pl-10"
+        />
       </div>
 
       {error ? (
-        <p className="mt-3 text-xs text-[var(--status-warning)]">{error}</p>
+        <p className="mt-6 text-xs text-[var(--status-warning)]">{error}</p>
       ) : null}
-    </Card>
+    </TerminalSection>
   );
 }
 
@@ -80,42 +81,44 @@ function QuotePanel({
   title,
   tone,
   quote,
+  className = "",
 }: {
   title: string;
   tone: "good" | "serious";
   quote: FetchPremiumResult;
+  className?: string;
 }) {
   return (
-    <div className="rounded border border-[var(--border)] p-3">
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-sm text-[var(--ink-primary)]">{title}</p>
+    <div className={className}>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <p className="text-sm font-medium text-[var(--ink-primary)]">{title}</p>
         <StatusBadge tone={tone} label={tone === "good" ? "TRUSTED" : "FLAGGED"} />
       </div>
-      <p className="text-2xl text-[var(--ink-primary)]">
+      <p className="text-3xl font-semibold tracking-[-0.02em] text-[var(--ink-primary)]">
         {formatUsdc(quote.quote.premium, 2)}
       </p>
-      <dl className="mt-3 space-y-1 text-xs text-[var(--ink-muted)]">
-        <div className="flex justify-between gap-4">
+      <dl className="mt-6 space-y-2 text-sm text-[var(--ink-muted)]">
+        <div className="flex justify-between gap-4 border-b border-[var(--gridline)] pb-2">
           <dt>Trust score</dt>
-          <dd className="text-[var(--ink-secondary)] tabular-nums">
+          <dd className="text-[var(--ink-primary)] tabular-nums">
             {quote.quote.trustScore}
           </dd>
         </div>
-        <div className="flex justify-between gap-4">
+        <div className="flex justify-between gap-4 border-b border-[var(--gridline)] pb-2">
           <dt>Risk multiplier</dt>
-          <dd className="text-[var(--ink-secondary)] tabular-nums">
+          <dd className="text-[var(--ink-primary)] tabular-nums">
             {formatBps(quote.quote.multiplierBps)}
           </dd>
         </div>
-        <div className="flex justify-between gap-4">
+        <div className="flex justify-between gap-4 border-b border-[var(--gridline)] pb-2">
           <dt>Agent risk</dt>
-          <dd className="text-[var(--ink-secondary)] tabular-nums">
+          <dd className="text-[var(--ink-primary)] tabular-nums">
             {formatBps(quote.quote.agentRiskBps)}
           </dd>
         </div>
         <div className="flex justify-between gap-4">
           <dt>API mode</dt>
-          <dd className="text-[var(--ink-secondary)]">{quote.mode}</dd>
+          <dd className="text-[var(--ink-primary)]">{quote.mode}</dd>
         </div>
       </dl>
     </div>

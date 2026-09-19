@@ -1,11 +1,10 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Card } from "@/components/ui/card";
 import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { SeriesLegend } from "@/components/ui/series-legend";
-import { StatTile } from "@/components/ui/stat-tile";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { StatsRow, TerminalSection } from "@/components/ui/terminal-section";
 import { WorkloadStripPlot } from "@/components/workload-strip-plot";
 import { streamDemoFire } from "@/lib/api";
 import { formatAddress } from "@/lib/format";
@@ -266,7 +265,7 @@ export function ParallelismPanel() {
           href={`https://explorer.monad.xyz/tx/${row.hash}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-xs tabular-nums text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+          className="font-mono text-xs tabular-nums text-[var(--ink-secondary)] hover:text-[var(--accent)]"
         >
           {formatAddress(row.hash, 8, 6)}
         </a>
@@ -296,13 +295,17 @@ export function ParallelismPanel() {
   const totalTx = rows.reduce((sum, row) => sum + row.txCount, 0);
 
   return (
-    <Card title="Monad parallelism benchmark">
-      <div className="mb-4 flex flex-wrap items-center gap-3">
+    <TerminalSection
+      label="04"
+      title="Monad parallelism benchmark"
+      description="Independent agent workloads vs conflicting state contention — measured honestly, with latest, safe, and finalized reported separately."
+    >
+      <div className="mb-6 flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={() => run()}
           disabled={loading}
-          className="rounded border border-[var(--border)] px-3 py-2 text-sm text-[var(--ink-primary)] disabled:opacity-50"
+          className="btn-primary"
         >
           {loading ? "Streaming…" : "Run benchmark stream (n=50)"}
         </button>
@@ -317,59 +320,58 @@ export function ParallelismPanel() {
         ) : null}
       </div>
 
-      <div className="mb-4">
-        <SeriesLegend items={LEGEND} />
-      </div>
+      <SeriesLegend items={LEGEND} />
 
       {stage ? (
-        <p className="mb-2 text-xs text-[var(--ink-muted)]">{stage}</p>
+        <p className="mt-4 text-xs text-[var(--ink-muted)]">{stage}</p>
       ) : null}
 
       {(error || result?.error) && !rows.length ? (
-        <p className="mb-4 text-sm text-[var(--status-warning)]">
+        <p className="mt-4 text-sm text-[var(--status-warning)]">
           {error ?? result?.error}
         </p>
       ) : null}
 
       {result?.note ? (
-        <p className="mb-4 text-xs text-[var(--ink-muted)]">{result.note}</p>
+        <p className="mt-4 text-xs text-[var(--ink-muted)]">{result.note}</p>
       ) : null}
 
       {rows.length > 0 || txRows.length > 0 ? (
         <>
-          <div className="mb-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatTile label="Total txs" value={totalTx.toLocaleString("en-US")} />
-            <StatTile
-              label="Total reverts"
-              value={totalReverts.toLocaleString("en-US")}
-            />
-            <StatTile
-              label="Independent p50"
-              value={
-                measured
-                  ? `${measured.independent.p50InclusionMs}ms`
-                  : "—"
-              }
-            />
-            <StatTile
-              label="Conflicting p50"
-              value={
-                measured
-                  ? `${measured.conflicting.p50InclusionMs}ms`
-                  : "—"
-              }
+          <div className="mt-8">
+            <StatsRow
+              items={[
+                { label: "Total txs", value: totalTx.toLocaleString("en-US") },
+                {
+                  label: "Total reverts",
+                  value: totalReverts.toLocaleString("en-US"),
+                },
+                {
+                  label: "Independent p50",
+                  value: measured
+                    ? `${measured.independent.p50InclusionMs}ms`
+                    : "—",
+                },
+                {
+                  label: "Conflicting p50",
+                  value: measured
+                    ? `${measured.conflicting.p50InclusionMs}ms`
+                    : "—",
+                },
+              ]}
             />
           </div>
 
-          <WorkloadStripPlot
-            series={stripSeries}
-            simulated={Boolean(result?.simulated || !measured)}
-          />
+          <div className="mt-8">
+            <WorkloadStripPlot
+              series={stripSeries}
+              simulated={Boolean(result?.simulated || !measured)}
+            />
+          </div>
 
-          <div className="my-4 rounded border border-[var(--border)] p-3 text-xs text-[var(--ink-muted)]">
-            <p className="mb-2 text-[var(--ink-secondary)]">
-              Block inclusion states (reported separately — never collapsed into
-              &quot;confirmed&quot;)
+          <div className="mt-8 text-sm text-[var(--ink-muted)]">
+            <p className="section-label mb-3">
+              Block inclusion states (never collapsed into &quot;confirmed&quot;)
             </p>
             <div className="grid gap-2 sm:grid-cols-3">
               <p>
@@ -387,18 +389,21 @@ export function ParallelismPanel() {
             </div>
           </div>
 
-          <DataTable
-            columns={workloadColumns}
-            rows={rows}
-            rowKey={(row) => row.key}
-            emptyMessage="No workload rows."
-          />
-
-          <div className="mt-4">
-            <h3 className="mb-2 text-sm text-[var(--ink-secondary)]">
-              Tx receipts ({txRows.length})
-            </h3>
+          <div className="mt-10">
+            <p className="section-label mb-4">Workloads</p>
             <DataTable
+              flat
+              columns={workloadColumns}
+              rows={rows}
+              rowKey={(row) => row.key}
+              emptyMessage="No workload rows."
+            />
+          </div>
+
+          <div className="mt-10">
+            <p className="section-label mb-4">Tx receipts ({txRows.length})</p>
+            <DataTable
+              flat
               columns={txColumns}
               rows={txRows}
               rowKey={(row) => row.key}
@@ -406,13 +411,12 @@ export function ParallelismPanel() {
             />
           </div>
 
-          <div className="mt-4 rounded border border-[var(--border)] p-3 text-xs text-[var(--ink-muted)]">
-            <p className="mb-1 text-[var(--ink-secondary)]">
-              Monad published spec (not our measurement)
-            </p>
+          <div className="mt-10 text-sm leading-relaxed text-[var(--ink-muted)]">
+            <p className="section-label mb-2">Monad published spec</p>
             <p>
               Block time: {result?.monadPublishedSpec?.blockTimeMs ?? 400}ms ·
               Finality: {result?.monadPublishedSpec?.finalityMs ?? 800}ms
+              <span className="text-[var(--ink-muted)]"> (not our measurement)</span>
             </p>
             <p className="mt-2">
               Our measurements:{" "}
@@ -426,10 +430,10 @@ export function ParallelismPanel() {
           </div>
         </>
       ) : !loading && !result ? (
-        <p className="text-sm text-[var(--ink-secondary)]">
+        <p className="mt-4 text-sm text-[var(--ink-muted)]">
           Run the benchmark stream to compare independent vs conflicting workloads.
         </p>
       ) : null}
-    </Card>
+    </TerminalSection>
   );
 }

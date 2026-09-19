@@ -240,3 +240,5 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - 2026-09-19: Person C polish pass — `AddressChip`, light-mode tokens, series legend, benchmark stat tiles (tx/reverts/p50), refresh control, `OurMeasurements` types ready for live `fire.mjs` output.
 - 2026-09-19: Person C shipped Protected Task Lifecycle panel (`GET /api/tasks/:id` mock), workload strip plot, latest/safe/finalized labels on benchmark panel.
 - 2026-09-19: Person C finished benchmark SSE stream (`GET /api/demo/fire/stream`), tx receipts table, connection-state badges, Turbopack-safe `run-script.ts` spawn; `npm run build` green.
+- 2026-09-19: Person C shipped premium editorial landing page at `/`, moved Agent Risk Terminal to `/terminal` with static product mockups and warm off-white aesthetic.
+- 2026-09-19: Person C unified terminal with landing design system — light editorial tokens, pill buttons, restrained badges, dark inset chart panel, shared CSS variables.

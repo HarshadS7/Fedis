@@ -29,8 +29,8 @@ export function WorkloadStripPlot({
   const height = series.length * rowHeight + 24;
 
   return (
-    <div className="rounded border border-[var(--border)] bg-[var(--surface-card)] p-3">
-      <p className="mb-3 text-xs text-[var(--ink-muted)]">
+    <div className="surface-inset-dark rounded-xl p-4">
+      <p className="mb-3 text-xs text-[#898781]">
         Per-tx inclusion strip {simulated ? "(illustrative layout — not measured)" : "(measured)"}
       </p>
       <svg
@@ -53,14 +53,14 @@ export function WorkloadStripPlot({
                     x: ((p.includedAtMs - t0) / span) * plotWidth + 24,
                     y: yBase,
                     hash: p.hash,
-                    color: SERIES_COLOR[row.series] ?? "var(--ink-muted)",
+                    color: SERIES_COLOR[row.series] ?? "#898781",
                   };
                 })
               : simulatedPoints(20, rowIndex * 13, 40).map((p, i) => ({
                   x: (p.x / 100) * plotWidth + 24,
                   y: yBase + (i % 2 === 0 ? -6 : 6),
                   hash: null,
-                  color: SERIES_COLOR[row.series] ?? "var(--ink-muted)",
+                  color: SERIES_COLOR[row.series] ?? "#898781",
                 }));
 
           return (
@@ -68,7 +68,7 @@ export function WorkloadStripPlot({
               <text
                 x={0}
                 y={yBase + 4}
-                fill="var(--ink-muted)"
+                fill="#898781"
                 fontSize="10"
               >
                 {row.label}
@@ -98,7 +98,7 @@ export function WorkloadStripPlot({
                   cy={p.y}
                   className="chart-mark"
                   fill={p.color}
-                  stroke="var(--surface-card)"
+                  stroke="#0d0d0d"
                   strokeWidth="2"
                 >
                   {p.hash ? <title>{p.hash}</title> : null}
