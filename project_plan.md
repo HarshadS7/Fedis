@@ -40,6 +40,12 @@ Each protected task stores:
 * `validationDataHash` / policy parameters
 * current settlement state
 
+Implemented in `contracts/src/TaskPolicy.sol` as `Created -> Bonded -> Executed -> Released | Slashed`.
+The terminal "Settled" stage is split into two states rather than one because the two outcomes pay
+different parties, and because splitting them makes a repeat settlement *unrepresentable*: each
+transition requires one specific predecessor state, so a settled task satisfies no guard and a second
+settlement reverts rather than relying on a boolean flag being checked correctly.
+
 Examples of machine-checkable success predicates:
 
 * returned value is within a tolerance of an oracle value;

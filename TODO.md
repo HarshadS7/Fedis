@@ -29,15 +29,15 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] Report any claim in `contracts/README.md` that doesn't hold
 
 ### 1.2 `TaskPolicy.sol`
-- [ ] `mapping(bytes32 taskId => Policy)`, isolated per task
-- [ ] Fields: taskId, agentId, paymentAmount, requiredBond, maxCompensation, deadline, validationMethod, validationDataHash, state
-- [ ] State machine: Created → Bonded → Executed → Settled
-- [ ] Reject invalid transitions; reject double settlement
-- [ ] Reject expired tasks past `deadline`
-- [ ] Event on every transition, `taskId` indexed
-- [ ] Custom errors with args (match `AgentVault.sol` style)
-- [ ] Tests: happy path, each invalid transition, double-settle, expiry
-- [ ] `forge test` green → tick, then move on
+- [x] `mapping(bytes32 taskId => Policy)`, isolated per task
+- [x] Fields: taskId, agentId, paymentAmount, requiredBond, maxCompensation, deadline, validationMethod, validationDataHash, state
+- [x] State machine: Created → Bonded → Executed → Settled (`Settled` implemented as two terminal states, `Released` / `Slashed`)
+- [x] Reject invalid transitions; reject double settlement
+- [x] Reject expired tasks past `deadline`
+- [x] Event on every transition, `taskId` indexed
+- [x] Custom errors with args (match `AgentVault.sol` style)
+- [x] Tests: happy path, each invalid transition, double-settle, expiry — 26 tests
+- [x] `forge test` green → tick, then move on (86/86)
 
 ### 1.3 `BondVault.sol`
 - [ ] Lock agent collateral for task lifetime
