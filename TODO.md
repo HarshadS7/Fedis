@@ -159,7 +159,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [ ] Thin marks: 2px lines, ≥8px markers, 4px rounded data-ends, 2px surface gap between adjacent fills, recessive grid
 - [ ] ≥2 series → legend always present; ≤4 series → also direct-labeled
 - [ ] Every chart has a table view (doubles as our receipts: real tx hashes)
-- [x] No number on screen that isn't in B's API response (premium contrast card still seeded copy — wire `/api/premium`)
+- [x] No number on screen that isn't in B's API response — premium contrast wired to `GET /api/premium`
 
 ### 3.3 Data contract
 - [x] `src/lib/types.ts` — B's actual response shapes, typed
@@ -171,7 +171,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] Agent vault DataTable: name, TVL, utilization, APY, risk, slashes
 - [x] Status badge on agents with slashes > 0 (icon + label)
 - [x] Empty state and error state both designed, not blank
-- [ ] Open in browser and actually look at it before ticking
+- [x] Open in browser and actually look at it before ticking
 
 ### 3.5 Dashboard 2 — Protected Task Lifecycle
 - [ ] Render the `project_plan.md` flow literally as a state machine (inline SVG or CSS — not a chart library)
@@ -182,18 +182,18 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [ ] Drive it from a real task via `GET /api/tasks/:id`
 - [ ] This screen explains the whole product — prioritise it over polish elsewhere
 
-### 3.6 Dashboard 3 — Monad parallelism
-- [ ] Two series only (independent vs conflicting) — slots 1 and 2, well inside the 3-series all-pairs cap
+### 3.6 Dashboard 3 — Monad parallelism (GO.md: panel only if time; full chart deferred)
+- [x] Two series only (independent vs conflicting) — slots 1 and 2, well inside the 3-series all-pairs cap
 - [ ] Per-tx dot/strip plot over time, one row per workload
 - [ ] Stat tiles: tx count, p50 / p95 inclusion, settled count, reverts
 - [ ] `latest` / `safe` / `finalized` reported separately — never collapsed into one "confirmed"
-- [ ] On-screen labels distinguishing **our measurements** from **Monad's published specs**
+- [x] On-screen labels distinguishing **our measurements** from **Monad's published specs**
 - [ ] Live-updating from B's stream; visible connection state
 - [ ] Table view with real tx hashes
 
 ### 3.7 Logging & demo-safety
 - [x] `[api]` log per call: endpoint, mode, status, duration
-- [ ] `[bench]` log per stream event
+- [x] `[bench]` log per stream event (client `fetchDemoFire` + server route)
 - [x] Fetch failure → full error logged **and** a visible UI error state (a blank panel is indistinguishable from a hung demo)
 - [x] Dev status strip: API mode, chain, last successful fetch time
 
@@ -236,3 +236,4 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - 2026-09-19: Expanded this file to a granular working-app checklist; added a locked design-token set and anti-vibecode rules for the frontend, grounded in the dataviz skill's validated palette and form rules rather than taste.
 - 2026-09-19: Verified the inherited contracts track before building on it (TODO 1.1). All claims in `contracts/README.md` hold: 60/60 tests pass, `node export-abi.mjs` reproduces the committed ABIs with zero drift, and `Deploy.s.sol` + `Seed.s.sol` run clean against a fresh anvil producing byte-identical addresses to `deployments/31337.json`. Confirmed Monad testnet is chain 10143 and the canonical ERC-8004 registry still has no bytecode there. Nothing inherited is broken; the bonded-execution build starts from a green base.
 - 2026-09-19: Person C refactored frontend per GO.md — single Agent Risk Terminal, locked design tokens, VaultInfo types, mock/live `/api/vaults` client with fallback fixtures, StatTiles + DataTable + StatusBadge primitives. Removed `/lp`, `/demo`, old vibecode styling.
+- 2026-09-19: Person C wired `GET /api/premium` contrast card ($1.10 vs $12.95 on flaky-scraper-v0) and `POST /api/demo/fire` parallelism panel (simulated shape, Monad 400ms/800ms labeled separately). Browser-verified on `:3001`.

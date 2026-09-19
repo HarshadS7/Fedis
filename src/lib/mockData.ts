@@ -1,5 +1,14 @@
 import { keccak256, toBytes } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 import type { VaultInfo } from "./types";
+
+function demoAddress(label: string): `0x${string}` {
+  return privateKeyToAccount(keccak256(toBytes(label))).address;
+}
+
+/** Seeded buyers from contracts/script/Seed.s.sol */
+export const DEMO_TRUSTED = demoAddress("fides.demo.trusted");
+export const DEMO_FRAUDSTER = demoAddress("fides.demo.fraudster");
 
 /**
  * The exact values Seed.s.sol puts on a freshly seeded chain (recorded in
@@ -16,6 +25,8 @@ const AGENT_NAMES = [
 ] as const;
 
 export const agentId = (name: string) => keccak256(toBytes(name));
+
+export const FLAKY_AGENT_ID = agentId("flaky-scraper-v0");
 
 /**
  * agentId is keccak256(name) on-chain, so the name cannot be recovered from the id.
@@ -77,15 +88,29 @@ export const MOCK_USERS: Record<string, { trustScore: string; multiplierBps: str
   fraudster: { trustScore: "3392", multiplierBps: "23500" },
 };
 
-export function mockQuote(agentIdHex: string, taskCostUsdc: bigint) {
-  const v = MOCK_VAULTS.find((x) => x.agentId.toLowerCase() === agentIdHex.toLowerCase());
+export function mockQuote(
+  agentIdHex: string,
+  taskCostUsdc: bigint,
+  user?: string,
+) {
+  const v = MOCK_VAULTS.find(
+    (x) => x.agentId.toLowerCase() === agentIdHex.toLowerCase(),
+  );
   const agentRiskBps = BigInt(v?.riskBps ?? "300");
-  const multiplierBps = 2000n;
-  const premium = (taskCostUsdc * agentRiskBps * multiplierBps) / 100_000_000n;
+
+  let multiplierBps = 2000n;
+  let trustScore = MOCK_USERS.trusted.trustScore;
+  if (user?.toLowerCase() === DEMO_FRAUDSTER.toLowerCase()) {
+    multiplierBps = BigInt(MOCK_USERS.fraudster.multiplierBps);
+    trustScore = MOCK_USERS.fraudster.trustScore;
+  }
+
+  const premium =
+    (taskCostUsdc * agentRiskBps * multiplierBps) / 100_000_000n;
   return {
     premium: premium.toString(),
     multiplierBps: multiplierBps.toString(),
     agentRiskBps: agentRiskBps.toString(),
-    trustScore: "9100",
+    trustScore,
   };
 }

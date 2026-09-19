@@ -23,11 +23,42 @@ export type VaultInfo = {
 export type PremiumQuote = {
   premium: string;
   multiplierBps: string;
+  agentRiskBps: string;
+  trustScore: string;
+};
+
+export type FetchPremiumResult = {
+  quote: PremiumQuote;
+  mode: ApiMode;
+  fetchedAt: string;
+  durationMs: number;
+  error?: string;
+};
+
+export type DemoFireWorkload = {
+  label: string;
+  agentsTouched: number;
+  txCount: number;
+  reverts: number;
+  series: string;
 };
 
 export type DemoFireResult = {
-  status: string;
-  message?: string;
+  mode: ApiMode;
+  simulated?: boolean;
+  note?: string;
+  n: number;
+  workloads?: {
+    independent: DemoFireWorkload;
+    conflicting: DemoFireWorkload;
+  };
+  monadPublishedSpec?: { blockTimeMs: number; finalityMs: number };
+  ourMeasurements: unknown;
+  available?: boolean;
+  reason?: string;
+  error?: string;
+  fetchedAt: string;
+  durationMs: number;
 };
 
 export type ApiMode = "mock" | "live";

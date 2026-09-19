@@ -65,7 +65,7 @@ export async function GET(req: Request) {
     }
   }
 
-  const q = mockQuote(agentId, taskCost);
+  const q = mockQuote(agentId, taskCost, user);
   log.ok("api", `GET /api/premium -> 200 mock in ${Date.now() - t0}ms`);
   return NextResponse.json({ mode: "mock", ...q });
 }
