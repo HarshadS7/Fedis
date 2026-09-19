@@ -52,6 +52,7 @@ const MAX_COMP = 40_000_000n;
 
 const taskPolicyAbi = parseAbi([
   "function getPolicy(bytes32 taskId) view returns ((bytes32 agentId, address buyer, uint256 paymentAmount, uint256 requiredBond, uint256 maxCompensation, uint256 deadline, uint8 validationMethod, bytes32 validationDataHash, bytes32 resultHash, uint8 state))",
+  "function getState(bytes32 taskId) view returns (uint8)",
   "function createTask(bytes32 taskId, bytes32 agentId, address buyer, uint256 paymentAmount, uint256 requiredBond, uint256 maxCompensation, uint256 deadline, uint8 validationMethod, bytes32 validationDataHash)",
   "function markExecuted(bytes32 taskId, bytes32 resultHash)",
 ]);
@@ -87,13 +88,16 @@ const account = privateKeyToAccount(PK);
 const wallet = createWalletClient({ account, transport });
 
 async function stateOf(taskId) {
-  const p = await pub.readContract({
+  // getPolicy reverts with TaskDoesNotExist for unknown ids (by design); getState is the
+  // non-reverting read that returns State.None (0) so seeding a fresh chain can tell
+  // "not created yet" from "created". See TaskPolicy.sol Views.
+  const s = await pub.readContract({
     address: taskPolicy,
     abi: taskPolicyAbi,
-    functionName: "getPolicy",
+    functionName: "getState",
     args: [taskId],
   });
-  return Number(p.state);
+  return Number(s);
 }
 
 async function send(label, address, abi, functionName, args) {

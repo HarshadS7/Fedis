@@ -1,0 +1,21 @@
+{
+  "chainId": 31337,
+  "seededAt": "2026-09-19T13:20:34.647Z",
+  "tasks": [
+    {
+      "id": "0xaede18554121ba5e57d8bf4ab5adae2146906fb6ac19161aa9c3c740e08218f3",
+      "label": "Failed task (slashed)",
+      "expectedState": "Slashed"
+    },
+    {
+      "id": "0x0bbc6d1f12805c9a9f93ab7108cb0dcdb84a585305674c21e0838b55c2d294da",
+      "label": "Successful task (released)",
+      "expectedState": "Released"
+    },
+    {
+      "id": "0x7d3f69ab8657521b370b036ec01aa8bfcbc5a9ac227b3396f10ba355e87480a0",
+      "label": "In-flight (awaiting verify)",
+      "expectedState": "Executed"
+    }
+  ]
+}

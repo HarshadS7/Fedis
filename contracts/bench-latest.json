@@ -1,44 +1,174 @@
 {
-  "measuredAt": "2026-09-19T11:29:07.455Z",
+  "measuredAt": "2026-09-19T13:15:00.550Z",
   "rpc": "http://127.0.0.1:8547",
   "chainId": 31337,
-  "walletCount": 20,
+  "walletCount": 3,
   "agentVault": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
   "note": "Measured on this node. Monad published specs (400ms blocks / 800ms finality) are separate and not included here.",
   "independent": {
     "workload": "A) INDEPENDENT — N wallets, N different vaults (disjoint storage)",
-    "txCount": 20,
-    "submitted": 20,
-    "settled": 20,
+    "txCount": 3,
+    "submitted": 3,
+    "settled": 3,
     "reverted": 0,
-    "wallMs": 4162,
-    "submittedMs": 113,
+    "wallMs": 4037,
+    "submittedMs": 23,
     "blocksUsed": 1,
-    "blockRange": "53..53",
-    "txPerBlock": 20,
-    "p50InclusionMs": 4154,
-    "p95InclusionMs": 4160,
-    "totalGas": 3200596,
+    "blockRange": "7777..7777",
+    "txPerBlock": 3,
+    "p50InclusionMs": 4037,
+    "p95InclusionMs": 4037,
+    "totalGas": 223581,
     "blocks": [
-      53
+      7777
+    ],
+    "transactions": [
+      {
+        "hash": "0x9f3f9bf02339386aa0beadc4599b3e298930f099cbc914bbefb1757493393b09",
+        "submittedAt": 1789823692468,
+        "includedAt": 1789823696503,
+        "ok": true,
+        "block": 7777,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      },
+      {
+        "hash": "0xf4d64fa866766b7bce308173a27af76e51bd77765431f89c4275bf634835a57d",
+        "submittedAt": 1789823692468,
+        "includedAt": 1789823696505,
+        "ok": true,
+        "block": 7777,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      },
+      {
+        "hash": "0x8bc112b778c2dc5d5c7abf430644c86595843c38d110eb84deffebe0000ccdfa",
+        "submittedAt": 1789823692468,
+        "includedAt": 1789823696505,
+        "ok": true,
+        "block": 7777,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      }
     ]
   },
   "conflicting": {
     "workload": "B) CONFLICTING — N wallets, ONE shared vault (same slots every tx)",
-    "txCount": 20,
-    "submitted": 20,
-    "settled": 20,
+    "txCount": 3,
+    "submitted": 3,
+    "settled": 3,
     "reverted": 0,
-    "wallMs": 4144,
-    "submittedMs": 69,
+    "wallMs": 4042,
+    "submittedMs": 21,
     "blocksUsed": 1,
-    "blockRange": "57..57",
-    "txPerBlock": 20,
-    "p50InclusionMs": 4136,
-    "p95InclusionMs": 4143,
-    "totalGas": 1575880,
+    "blockRange": "7781..7781",
+    "txPerBlock": 3,
+    "p50InclusionMs": 4042,
+    "p95InclusionMs": 4042,
+    "totalGas": 223557,
     "blocks": [
-      57
+      7781
+    ],
+    "transactions": [
+      {
+        "hash": "0xc4b0ea6c9bbd4bb5cd26d1eb424171a37723ffe7f0e5ecf17e1a34a2aa2da1d0",
+        "submittedAt": 1789823696507,
+        "includedAt": 1789823700549,
+        "ok": true,
+        "block": 7781,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      },
+      {
+        "hash": "0x0bc175ff2c77a18a231ebca6f7085e27ea42aa8ada9943b11b548fe16a47fc91",
+        "submittedAt": 1789823696507,
+        "includedAt": 1789823700549,
+        "ok": true,
+        "block": 7781,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      },
+      {
+        "hash": "0xf129fc64e6e04726f90eac88d047fa5b5f8657918d629fa52cced9dce6e2e828",
+        "submittedAt": 1789823696507,
+        "includedAt": 1789823700549,
+        "ok": true,
+        "block": 7781,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      }
+    ]
+  },
+  "transactions": {
+    "independent": [
+      {
+        "hash": "0x9f3f9bf02339386aa0beadc4599b3e298930f099cbc914bbefb1757493393b09",
+        "submittedAt": 1789823692468,
+        "includedAt": 1789823696503,
+        "ok": true,
+        "block": 7777,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      },
+      {
+        "hash": "0xf4d64fa866766b7bce308173a27af76e51bd77765431f89c4275bf634835a57d",
+        "submittedAt": 1789823692468,
+        "includedAt": 1789823696505,
+        "ok": true,
+        "block": 7777,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      },
+      {
+        "hash": "0x8bc112b778c2dc5d5c7abf430644c86595843c38d110eb84deffebe0000ccdfa",
+        "submittedAt": 1789823692468,
+        "includedAt": 1789823696505,
+        "ok": true,
+        "block": 7777,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      }
+    ],
+    "conflicting": [
+      {
+        "hash": "0xc4b0ea6c9bbd4bb5cd26d1eb424171a37723ffe7f0e5ecf17e1a34a2aa2da1d0",
+        "submittedAt": 1789823696507,
+        "includedAt": 1789823700549,
+        "ok": true,
+        "block": 7781,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      },
+      {
+        "hash": "0x0bc175ff2c77a18a231ebca6f7085e27ea42aa8ada9943b11b548fe16a47fc91",
+        "submittedAt": 1789823696507,
+        "includedAt": 1789823700549,
+        "ok": true,
+        "block": 7781,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      },
+      {
+        "hash": "0xf129fc64e6e04726f90eac88d047fa5b5f8657918d629fa52cced9dce6e2e828",
+        "submittedAt": 1789823696507,
+        "includedAt": 1789823700549,
+        "ok": true,
+        "block": 7781,
+        "latest": true,
+        "safe": true,
+        "finalized": true
+      }
     ]
   }
 }
