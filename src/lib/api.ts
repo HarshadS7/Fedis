@@ -70,13 +70,24 @@ export async function fetchVaults(): Promise<FetchVaultsResult> {
       };
     }
 
-    const vaults = (await res.json()) as VaultInfo[];
-    logApi("live", "GET", path, 200, durationMs);
+    // The route returns an envelope, and its `mode` is authoritative: a 200 does NOT
+    // mean live data. With no chain reachable the server answers 200 with fixtures,
+    // so trusting the status here would label mock numbers as live on screen.
+    const body = (await res.json()) as {
+      mode: ApiMode;
+      vaults: VaultInfo[];
+      degraded?: boolean;
+      error?: string;
+    };
+    logApi(body.mode, "GET", path, 200, durationMs);
     return {
-      vaults,
-      mode: "live",
+      vaults: body.vaults,
+      mode: body.mode,
       fetchedAt: new Date().toISOString(),
       durationMs,
+      error: body.degraded
+        ? `Live read failed, serving fixtures. ${body.error ?? ""}`.trim()
+        : undefined,
     };
   } catch (error) {
     const durationMs = Date.now() - started;

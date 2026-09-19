@@ -1,5 +1,9 @@
 # Team Prompts — Fedis / Aegis (bonded execution pivot)
 
+> ⚠️ **With under an hour left, use [`GO.md`](./GO.md) instead.** This file assumes a
+> multi-hour build and its bonded-execution rewrite is not finishable in that time.
+> Come back here after the deadline.
+
 Three self-contained prompts, one per person. Copy the whole block for your track into a
 fresh Claude Code session opened in the repo root. Each prompt assumes the agent knows
 nothing about this project, so it re-reads the plan files itself.

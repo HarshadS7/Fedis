@@ -1,5 +1,9 @@
 # TODO
 
+> ⚠️ **Under an hour left → work from [`GO.md`](./GO.md), not this file.** The list below
+> is the full multi-hour build. `GO.md` is the triaged 60-minute version: ship the existing
+> contracts, reframe the pitch, skip the bonded-execution rewrite.
+
 Plan: [`project_plan.md`](./project_plan.md) (source of truth) · [`fedis-build-plan-v2.md`](./fedis-build-plan-v2.md) (build plan) · [`TEAM-PROMPTS.md`](./TEAM-PROMPTS.md) (per-person agent prompts)
 
 **Definition of "working app":** a buyer creates a protected task → an agent locks a bond → the task executes → a deterministic validator passes or fails it → the bond is released or slashed and the buyer compensated → all of it visible in the UI, on a real chain, **both** paths. Everything below serves that sentence.
