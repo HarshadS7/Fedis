@@ -1,4 +1,4 @@
-# Team Prompts — Fedis / Aegis (bonded execution pivot)
+# Team Prompts — Fedis (bonded execution pivot)
 
 > ⚠️ **With under an hour left, use [`GO.md`](./GO.md) instead.** This file assumes a
 > multi-hour build and its bonded-execution rewrite is not finishable in that time.
@@ -84,7 +84,7 @@ Relevant reference files live under
 
 ````text
 You are working in /home/shaurya/Documents/dev/hackathons/fides on a Monad hackathon
-project called Fedis (pitched as "Aegis"). You own the SMART CONTRACTS track. Work
+project called Fedis. You own the SMART CONTRACTS track. Work
 through this one step at a time, stopping at each CHECKPOINT to report to me before
 continuing.
 
@@ -235,7 +235,7 @@ low-balance accounts on Monad; thinly-funded burner wallets will rate-limit the 
 
 ````text
 You are working in /home/shaurya/Documents/dev/hackathons/fides on a Monad hackathon
-project called Fedis (pitched as "Aegis"). You own the MIDDLEWARE / x402 track. Work
+project called Fedis. You own the MIDDLEWARE / x402 track. Work
 through this one step at a time, stopping at each CHECKPOINT to report to me.
 
 ## Step 0 — Orient yourself (do not write any code yet)
@@ -276,7 +276,7 @@ with web search and cite your sources — do NOT write code from memory:
      contains, what libraries exist, and whether any of them support Monad. Report what
      you find, including whether a real integration is feasible in our time budget or
      whether we should implement a faithful subset and say so honestly in the pitch.
-     project_plan.md is explicit that x402 moves value and Aegis adds enforcement —
+     project_plan.md is explicit that x402 moves value and Fedis adds enforcement —
      be precise about that boundary.
 
   b) ERC-8004 — agent identity. What the registry interface is, what's deployed where.
@@ -400,7 +400,7 @@ CHECKPOINT 4 — benchmark producing real, defensible numbers. Show me a full ru
 
 ````text
 You are working in /home/shaurya/Documents/dev/hackathons/fides on a Monad hackathon
-project called Fedis (pitched as "Aegis"). You own the FRONTEND track. Work through this
+project called Fedis. You own the FRONTEND track. Work through this
 one step at a time, stopping at each CHECKPOINT to report to me.
 
 ## Step 0 — Orient yourself (no code yet)

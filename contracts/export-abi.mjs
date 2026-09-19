@@ -20,6 +20,9 @@ const CONTRACTS = [
   "VaultEscrow",
   "MockUSDC",
   "MockIdentityRegistry",
+  // Bonded execution (project_plan.md). Without these the middleware cannot see them.
+  "TaskPolicy",
+  "BondVault",
 ];
 
 // Signatures the middleware and frontend are built against. If one of these stops

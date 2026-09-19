@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored Solidity deps (forge-std, openzeppelin). Linting them buried our own
+    // 3 real errors under 21 of theirs.
+    "contracts/lib/**",
   ]),
 ]);
 

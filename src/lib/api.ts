@@ -21,11 +21,13 @@ import type {
 
 const TASK_COST_100_USD = "100000000";
 
-function useLiveApi(): boolean {
+// NB: these must NOT be named use*, or ESLint treats them as React hooks and the
+// rules-of-hooks check fails on this plain async function.
+function isLiveApiForced(): boolean {
   return process.env.NEXT_PUBLIC_API_MODE === "live";
 }
 
-function useClientMockOnly(): boolean {
+function isClientMockOnly(): boolean {
   return (
     process.env.NEXT_PUBLIC_API_MODE === "mock" ||
     process.env.NEXT_PUBLIC_FORCE_MOCK === "1"
@@ -56,7 +58,7 @@ export async function fetchVaults(): Promise<FetchVaultsResult> {
   const started = Date.now();
   const path = "/api/vaults";
 
-  if (useClientMockOnly()) {
+  if (isClientMockOnly()) {
     const durationMs = Date.now() - started;
     logApi("mock", "GET", path, 200, durationMs);
     return {
@@ -73,7 +75,7 @@ export async function fetchVaults(): Promise<FetchVaultsResult> {
 
     if (!res.ok) {
       logApiFail(path, `HTTP ${res.status}`);
-      if (useLiveApi()) {
+      if (isLiveApiForced()) {
         logApi("live", "GET", path, res.status, durationMs);
         return {
           vaults: [],
@@ -138,7 +140,7 @@ export async function fetchPremium(
   const started = Date.now();
   const path = `/api/premium?agentId=${encodeURIComponent(agentId)}&user=${encodeURIComponent(user)}&taskCost=${taskCost}`;
 
-  if (useClientMockOnly()) {
+  if (isClientMockOnly()) {
     const durationMs = Date.now() - started;
     logApi("mock", "GET", path, 200, durationMs);
     return {
@@ -211,7 +213,7 @@ export async function fetchTask(taskId: string): Promise<FetchTaskResult> {
   const started = Date.now();
   const path = `/api/tasks/${encodeURIComponent(taskId)}`;
 
-  if (useClientMockOnly()) {
+  if (isClientMockOnly()) {
     const durationMs = Date.now() - started;
     const task = mockTask(taskId);
     logApi("mock", "GET", path, task ? 200 : 404, durationMs);

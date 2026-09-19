@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title TaskPolicy
-/// @notice The obligation ledger of Aegis. Before an agent does any paid work, the buyer
+/// @notice The obligation ledger of Fedis. Before an agent does any paid work, the buyer
 ///         records what "success" means for this one task -- the payment, the bond the agent
 ///         must post, the most the buyer can be compensated, the deadline, and a commitment
 ///         to the validation parameters. Nothing here judges quality; this contract only
@@ -50,7 +50,7 @@ contract TaskPolicy is Ownable {
     }
 
     /// @notice How this task's success predicate is checked. Both are deterministic --
-    ///         Aegis makes no claim that a model can judge its own output.
+    ///         Fedis makes no claim that a model can judge its own output.
     enum ValidationMethod {
         SignedAttestation, // an authorized validator signs a pass/fail attestation
         OracleTolerance // a reported value must fall within a committed tolerance

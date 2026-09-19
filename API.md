@@ -70,11 +70,48 @@ matches the seeded chain. The fraudster's 2.35x multiplier is the contrast worth
 
 ### `POST /api/demo/fire`  body `{ "n": 50 }`
 
-**Mock mode returns `"simulated": true` with `"ourMeasurements": null`.** Render it as
-illustrative and labelled, never as a measurement. `monadPublishedSpec` is Monad's own
-400ms/800ms figures — label those as *published spec*, separate from anything we measured.
+Serves the **measured** output of `contracts/script/fire.mjs` when
+`contracts/bench-latest.json` exists: `{ simulated: false, ourMeasurements: {...} }`.
+With no measured run it falls back to `{ simulated: true, ourMeasurements: null }` —
+render that as illustrative, never as a measurement.
 
-Live mode currently returns **503 with a `reason`** rather than fake numbers (see below).
+⚠️ Read `caveat` in the response and put it on screen. A local anvil executes
+**sequentially**, so INDEPENDENT and CONFLICTING are *expected* to match; the gap is a
+Monad property and is **not** demonstrated by a local run. Contention-freedom is proven
+separately and deterministically by the storage-access tests in `Integration.t.sol`.
+
+`monadPublishedSpec` is Monad's own 400ms/800ms figures — label as *published spec*,
+kept separate from our measurements.
+
+---
+
+## Bonded execution — `/api/tasks/*` (live chain only, 503 without one)
+
+The full lifecycle, verified end to end on-chain:
+
+| Endpoint | Method | Does |
+|---|---|---|
+| `/api/tasks` | POST | `TaskPolicy.createTask` → state `Created` |
+| `/api/tasks/[id]/bond` | POST | mints+approves as needed, `BondVault.lockBond` → `Bonded` |
+| `/api/tasks/[id]/submit` | POST | `markExecuted` then release **or** slash → `Released`/`Slashed` |
+| `/api/tasks/[id]` | GET | full policy + bond + lifecycle state |
+
+Create body: `{ agentName | agentId, buyer, requiredBond?, maxCompensation?, paymentAmount?, deadlineSeconds?, validationMethod? }`
+Submit body: `{ result?, passed: boolean }`.
+
+Every write returns `tx: { hash, gasUsed, blockNumber }` — real hashes for the UI to link.
+State transitions are guarded: bonding a non-`Created` task or submitting a non-`Bonded`
+task returns **409** with the actual state.
+
+**Verified on a local chain:**
+- Pass path: `Created → Bonded → Executed → Released`
+- Slash path: buyer received exactly **$40** on a $50 bond with `maxCompensation` $40 —
+  cap enforced, $10 refunded to the bonder
+
+⚠️ **Honest boundary for the pitch:** `passed` is supplied by the caller. `ValidationRouter`
+is not built, so validation is currently an authorized call, **not** an on-chain
+deterministic predicate. The response says so in its `validation.method` field. Say this
+out loud before a judge asks.
 
 ---
 
@@ -90,15 +127,16 @@ Mode is automatic: live only if addresses exist **and** the node answers (re-pro
 5s, so a chain coming up mid-demo is picked up without a restart). Addresses and ABIs are
 read off disk from `contracts/` — never hardcoded.
 
-## ⚠️ Open blocker for Person A — the benchmark
+## ✅ Resolved — the benchmark authorization blocker
 
-`AgentVault.bond()` is `onlyAuthorized`, so **N burner wallets cannot call it**. "Fire from
-many wallets" and this access control are in direct conflict. Two ways out:
+`AgentVault.bond()` is `onlyAuthorized`, so N burner wallets couldn't call it. Person A
+solved it in `fire.mjs` with **`setAuthorizedBatch`** — all firing wallets authorized in one
+transaction, then `bond()` fired from each. No longer blocking.
 
-1. Owner calls `setAuthorized(wallet, true)` for each firing wallet first (N setup txs), or
-2. Use the permissionless **`deposit()`** path as the isolated workload instead — it's
-   per-agent isolated storage, which is exactly the parallelism claim, and needs no
-   authorization. Each wallet needs MockUSDC minted to it.
+## ⚠️ Live gotcha — two anvils, one chainId
 
-Option 2 is less setup and demonstrates the same isolation property. **A decides**; I'll wire
-the live path the moment that's settled and a chain is reachable.
+The demo chain (`:8545`) and the bench chain (`:8547`) are **both chainId 31337**, so both
+write `contracts/deployments/31337.json`. Addresses currently match because anvil is
+deterministic and both deploy in the same order — but if the two ever diverge, the UI will
+read the wrong addresses with no error. Deploy the bench chain *before* the demo chain, or
+give it a distinct `--chain-id`.
