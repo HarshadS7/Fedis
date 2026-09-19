@@ -1,3 +1,8 @@
+> **Superseded by [`project_plan.md`](./project_plan.md).** This doc describes the
+> original insurance-pool model; the pivoted plan replaces the MVP with bonded
+> execution and demotes this model to a post-hackathon Phase 4. Kept for history.
+> Build plan: [`fedis-build-plan-v2.md`](./fedis-build-plan-v2.md).
+
 # Aegis (IsoVault): Bilateral Underwriting & Insurance for the Agentic Web
 
 ## 1. Executive Summary
