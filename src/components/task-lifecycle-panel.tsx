@@ -68,6 +68,7 @@ export function TaskLifecyclePanel() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- refreshes the selected task from the API
     void load(taskId);
   }, [load, taskId]);
 

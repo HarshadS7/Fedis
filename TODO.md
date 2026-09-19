@@ -207,7 +207,7 @@ proven instead by the storage-access tests in `Integration.t.sol`.
 - [x] Current state highlighted; both branches visible at all times
 - [x] Money movement explicit: who paid what to whom, with amounts
 - [x] Each completed step links to its tx on the explorer
-- [x] Drive it from a real task via `GET /api/tasks/:id` (mock route + fixtures until B wires TaskPolicy)
+- [x] Drive it from a real task via `GET /api/tasks/:id` (live TaskPolicy/BondVault reads with mock fallback)
 - [x] This screen explains the whole product — prioritise it over polish elsewhere
 
 ### 3.6 Dashboard 3 — Monad parallelism (GO.md: panel only if time; full chart deferred)
@@ -274,6 +274,7 @@ proven instead by the storage-access tests in `Integration.t.sol`.
 - 2026-09-19: Ran A's `fire.mjs` on a separate bench chain (:8547 — it refuses to pollute the demo chain). 20 txs, 1 block, 0 reverts. `/api/demo/fire` now serves that measured JSON with the sequential-anvil caveat attached instead of returning 503.
 - 2026-09-19: Verified the inherited contracts track before building on it (TODO 1.1). All claims in `contracts/README.md` hold: 60/60 tests pass, `node export-abi.mjs` reproduces the committed ABIs with zero drift, and `Deploy.s.sol` + `Seed.s.sol` run clean against a fresh anvil producing byte-identical addresses to `deployments/31337.json`. Confirmed Monad testnet is chain 10143 and the canonical ERC-8004 registry still has no bytecode there. Nothing inherited is broken; the bonded-execution build starts from a green base.
 - 2026-09-19: Added shareable `.env.example` templates for the app/API and Foundry contracts deployment; documented local Anvil defaults, Monad testnet placeholders, signer separation, and the ABI/address handoff.
+- 2026-09-19: Wired `GET /api/tasks/:id` to live `TaskPolicy` + `BondVault` reads, retaining mock fixtures for mock mode; TypeScript passes.
 - 2026-09-19: Person C refactored frontend per GO.md — single Agent Risk Terminal, locked design tokens, VaultInfo types, mock/live `/api/vaults` client with fallback fixtures, StatTiles + DataTable + StatusBadge primitives. Removed `/lp`, `/demo`, old vibecode styling.
 - 2026-09-19: Person C wired `GET /api/premium` contrast card ($1.10 vs $12.95 on flaky-scraper-v0) and `POST /api/demo/fire` parallelism panel (simulated shape, Monad 400ms/800ms labeled separately). Browser-verified on `:3001`.
 - 2026-09-19: Person C polish pass — `AddressChip`, light-mode tokens, series legend, benchmark stat tiles (tx/reverts/p50), refresh control, `OurMeasurements` types ready for live `fire.mjs` output.
