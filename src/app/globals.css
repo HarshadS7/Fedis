@@ -40,3 +40,19 @@ body {
   color: var(--ink-primary);
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
+
+/* Chart marks — 2px lines, ≥8px markers, recessive grid */
+.chart-grid {
+  stroke: var(--gridline);
+  stroke-width: 2;
+}
+
+.chart-mark {
+  fill: var(--series-1);
+  r: 4;
+}
+
+.chart-track {
+  stroke: var(--gridline);
+  stroke-width: 2;
+}

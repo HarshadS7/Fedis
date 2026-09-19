@@ -289,6 +289,23 @@ async function runWorkload(name, wallets, agentFor) {
 
   for (const r of reverted) fail(`tx ${r.hash?.slice(0, 12)}... reverted: ${r.error ?? "execution reverted"}`);
 
+  const transactions = results.map((r) => {
+    const inclusionMs = r.includedAt - r.submittedAt;
+    const tx = {
+      hash: r.hash,
+      submittedAt: r.submittedAt,
+      includedAt: r.includedAt,
+      ok: r.ok,
+      block: r.block,
+      latest: r.ok,
+      safe: r.ok,
+      finalized: r.ok && inclusionMs >= 800,
+    };
+    const workloadKey = name.includes("INDEPENDENT") ? "independent" : "conflicting";
+    console.log("[bench-event]", JSON.stringify({ type: "tx", workload: workloadKey, workloadLabel: name, ...tx }));
+    return tx;
+  });
+
   const summary = {
     workload: name,
     txCount: wallets.length,
@@ -304,6 +321,7 @@ async function runWorkload(name, wallets, agentFor) {
     p95InclusionMs: pct(0.95),
     totalGas: gas,
     blocks,
+    transactions,
   };
 
   log(`settled ${ok.length}/${wallets.length}, reverts ${summary.reverted}, wall ${wallMs}ms`);
@@ -393,7 +411,12 @@ async function main() {
     note: "Measured on this node. Monad published specs (400ms blocks / 800ms finality) are separate and not included here.",
     independent,
     conflicting,
+    transactions: {
+      independent: independent.transactions,
+      conflicting: conflicting.transactions,
+    },
   };
+  console.log("[bench-event]", JSON.stringify({ type: "done", payload }));
   writeFileSync(OUT, JSON.stringify(payload, null, 2) + "\n");
   log(`wrote ${OUT}`);
 }

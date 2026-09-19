@@ -8,6 +8,9 @@ import {
 import { DEMO_TASK_SLASHED, mockTask } from "./mockTasks";
 import type {
   ApiMode,
+  BenchStreamHandlers,
+  BenchStreamState,
+  BenchTxReceiptRow,
   DemoFireResult,
   FetchPremiumResult,
   FetchTaskResult,
@@ -273,6 +276,88 @@ export async function fetchTask(taskId: string): Promise<FetchTaskResult> {
           : "Unknown error. Falling back to mock fixture.",
     };
   }
+}
+
+export function streamDemoFire(
+  n = 50,
+  handlers: BenchStreamHandlers = {},
+): { close: () => void; state: BenchStreamState } {
+  let state: BenchStreamState = "connecting";
+  handlers.onState?.(state);
+  logBench(`GET /api/demo/fire/stream n=${n}`);
+
+  const source = new EventSource(`/api/demo/fire/stream?n=${n}`);
+
+  source.onmessage = (message) => {
+    try {
+      const event = JSON.parse(message.data) as {
+        type: string;
+        label?: string;
+        hash?: string;
+        workload?: string;
+        latest?: boolean;
+        safe?: boolean;
+        finalized?: boolean;
+        result?: DemoFireResult;
+        message?: string;
+      };
+
+      if (event.type === "connected") {
+        state = "streaming";
+        handlers.onState?.(state);
+        logBench("stream connected");
+      } else if (event.type === "stage" && event.label) {
+        handlers.onStage?.(event.label);
+        logBench(`stream stage - ${event.label}`);
+      } else if (event.type === "tx" && event.hash && event.workload) {
+        const row: BenchTxReceiptRow = {
+          key: `${event.workload}-${event.hash}`,
+          workload: event.workload,
+          hash: event.hash,
+          inclusionMs: 0,
+          latest: Boolean(event.latest),
+          safe: Boolean(event.safe),
+          finalized: Boolean(event.finalized),
+        };
+        handlers.onTx?.(row);
+        logBench(`stream tx ${event.hash.slice(0, 10)}…`);
+      } else if (event.type === "done" && event.result) {
+        state = "done";
+        handlers.onState?.(state);
+        handlers.onDone?.(event.result);
+        logBench("stream done");
+        source.close();
+      } else if (event.type === "error") {
+        state = "error";
+        handlers.onState?.(state);
+        handlers.onError?.(event.message ?? "benchmark stream error");
+        logBench(`stream error - ${event.message ?? "unknown"}`);
+        source.close();
+      }
+    } catch (error) {
+      state = "error";
+      handlers.onState?.(state);
+      handlers.onError?.(
+        error instanceof Error ? error.message : "failed to parse stream event",
+      );
+      source.close();
+    }
+  };
+
+  source.onerror = () => {
+    if (state !== "done") {
+      state = "error";
+      handlers.onState?.(state);
+      handlers.onError?.("benchmark stream disconnected");
+      logBench("stream disconnected");
+    }
+    source.close();
+  };
+
+  return {
+    close: () => source.close(),
+    state,
+  };
 }
 
 export async function fetchDemoFire(n = 50): Promise<DemoFireResult> {

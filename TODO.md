@@ -156,7 +156,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] Sequential = one hue light→dark; diverging = two hues + neutral gray midpoint; never rainbow
 - [x] Color follows the entity, never its rank — filtering must not repaint survivors
 - [x] Text wears ink tokens, never the series color
-- [ ] Thin marks: 2px lines, ≥8px markers, 4px rounded data-ends, 2px surface gap between adjacent fills, recessive grid
+- [x] Thin marks: 2px lines, ≥8px markers, 4px rounded data-ends, 2px surface gap between adjacent fills, recessive grid
 - [x] ≥2 series → legend always present; ≤4 series → also direct-labeled (parallelism panel)
 - [x] Every chart has a table view (parallelism table present; real tx hashes await live benchmark)
 - [x] No number on screen that isn't in B's API response — premium contrast wired to `GET /api/premium`
@@ -188,8 +188,8 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] Stat tiles: tx count, p50 / p95 inclusion, settled count, reverts (table + tiles; tx hashes await live run)
 - [x] `latest` / `safe` / `finalized` reported separately — never collapsed into one "confirmed"
 - [x] On-screen labels distinguishing **our measurements** from **Monad's published specs**
-- [ ] Live-updating from B's stream; visible connection state
-- [ ] Table view with real tx hashes
+- [x] Live-updating from B's stream; visible connection state
+- [x] Table view with real tx hashes (mock `0xsim…` in dev; live hashes when bench node on :8547)
 
 ### 3.7 Logging & demo-safety
 - [x] `[api]` log per call: endpoint, mode, status, duration
@@ -239,3 +239,4 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - 2026-09-19: Person C wired `GET /api/premium` contrast card ($1.10 vs $12.95 on flaky-scraper-v0) and `POST /api/demo/fire` parallelism panel (simulated shape, Monad 400ms/800ms labeled separately). Browser-verified on `:3001`.
 - 2026-09-19: Person C polish pass — `AddressChip`, light-mode tokens, series legend, benchmark stat tiles (tx/reverts/p50), refresh control, `OurMeasurements` types ready for live `fire.mjs` output.
 - 2026-09-19: Person C shipped Protected Task Lifecycle panel (`GET /api/tasks/:id` mock), workload strip plot, latest/safe/finalized labels on benchmark panel.
+- 2026-09-19: Person C finished benchmark SSE stream (`GET /api/demo/fire/stream`), tx receipts table, connection-state badges, Turbopack-safe `run-script.ts` spawn; `npm run build` green.

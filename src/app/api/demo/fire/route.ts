@@ -1,4 +1,11 @@
 import { NextResponse } from "next/server";
+import {
+  benchNodeReachable,
+  benchRpcUrl,
+  demoFireFromBench,
+  readBenchFile,
+} from "@/lib/bench";
+import { runFireScript } from "./run-script";
 import { resolveMode } from "@/lib/chain";
 import { log } from "@/lib/log";
 import { MOCK_VAULTS } from "@/lib/mockData";
@@ -7,14 +14,6 @@ export const dynamic = "force-dynamic";
 
 /**
  * POST /api/demo/fire - the parallelism benchmark.
- *
- * Two workloads, reported separately:
- *   independent - N txs across N DIFFERENT agentIds (isolated storage slots)
- *   conflicting - N txs all hitting the SAME agentId
- *
- * IMPORTANT (honesty rule): in mock mode this returns `simulated: true` and the UI
- * MUST render it as illustrative, not as a measurement. We do not put invented
- * numbers on screen as if they came from a chain.
  */
 export async function POST(req: Request) {
   const t0 = Date.now();
@@ -28,20 +27,53 @@ export async function POST(req: Request) {
 
   log.ok("bench", `POST /api/demo/fire n=${n}`);
   const mode = await resolveMode();
+  const benchUp = await benchNodeReachable();
 
-  if (mode === "live") {
-    // Blocked on two things owned by Person A - see the note in the response.
-    // Returning an explicit unavailable beats inventing numbers.
-    log.warn("bench", "live benchmark not wired yet - returning 503 rather than fake numbers");
+  if (mode === "live" && benchUp) {
+    log.ok("bench", `live bench node reachable at ${benchRpcUrl()}`);
+    const events: Array<{ type: string }> = [];
+    const result = await runFireScript(n, (event) => {
+      events.push(event);
+    });
+
+    if (result) {
+      log.ok("bench", `POST /api/demo/fire -> 200 live in ${Date.now() - t0}ms`);
+      return NextResponse.json({
+        ...result,
+        durationMs: Date.now() - t0,
+      });
+    }
+
+    const cached = readBenchFile();
+    if (cached) {
+      const fromFile = demoFireFromBench(cached, "live");
+      log.ok("bench", `POST /api/demo/fire -> 200 live (cached file) in ${Date.now() - t0}ms`);
+      return NextResponse.json({
+        ...fromFile,
+        durationMs: Date.now() - t0,
+      });
+    }
+  }
+
+  if (mode === "live" && !benchUp) {
+    const cached = readBenchFile();
+    if (cached) {
+      log.warn("bench", "bench node down — serving last measured run from disk");
+      return NextResponse.json({
+        ...demoFireFromBench(cached, "live"),
+        durationMs: Date.now() - t0,
+        note: "Serving last measured run from contracts/bench-latest.json (bench node unreachable).",
+      });
+    }
+
+    log.warn("bench", "live benchmark unavailable — no bench node and no cached file");
     return NextResponse.json(
       {
         mode,
         available: false,
         reason:
-          "Live benchmark not wired. AgentVault.bond() is onlyAuthorized, so N burner " +
-          "wallets cannot call it directly - either authorize them first, or use the " +
-          "permissionless deposit() path as the isolated workload (needs MockUSDC minted " +
-          "to each wallet).",
+          `Bench node unreachable at ${benchRpcUrl()}. Start a separate anvil on :8547, ` +
+          "deploy + seed, then run: node contracts/script/fire.mjs --n 50",
       },
       { status: 503 },
     );
@@ -51,7 +83,7 @@ export async function POST(req: Request) {
   const payload = {
     mode,
     simulated: true,
-    note: "ILLUSTRATIVE SHAPE ONLY - not a measurement. Render as simulated.",
+    note: "ILLUSTRATIVE SHAPE ONLY - not a measurement. Use /api/demo/fire/stream for live UI.",
     n,
     workloads: {
       independent: {

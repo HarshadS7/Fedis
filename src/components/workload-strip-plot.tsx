@@ -25,7 +25,8 @@ export function WorkloadStripPlot({
   simulated: boolean;
 }) {
   const width = 640;
-  const height = series.length * 56 + 24;
+  const rowHeight = 64;
+  const height = series.length * rowHeight + 24;
 
   return (
     <div className="rounded border border-[var(--border)] bg-[var(--surface-card)] p-3">
@@ -39,25 +40,27 @@ export function WorkloadStripPlot({
         aria-label="Workload inclusion strip plot"
       >
         {series.map((row, rowIndex) => {
-          const yBase = 20 + rowIndex * 56;
+          const yBase = 24 + rowIndex * rowHeight;
+          const plotWidth = width - 48;
           const points =
             row.points.length > 0
-              ? row.points.map((p, i) => ({
-                  x: ((p.includedAtMs - row.points[0].submittedAtMs) /
-                    Math.max(
-                      row.points[row.points.length - 1].includedAtMs -
-                        row.points[0].submittedAtMs,
-                      1,
-                    )) *
-                    (width - 48) +
-                    24,
-                  y: yBase,
-                  hash: p.hash,
-                }))
-              : simulatedPoints(20, rowIndex * 13, 40).map((p) => ({
-                  x: (p.x / 100) * (width - 48) + 24,
-                  y: yBase,
+              ? row.points.map((p) => {
+                  const t0 = row.points[0].submittedAtMs;
+                  const t1 =
+                    row.points[row.points.length - 1].includedAtMs;
+                  const span = Math.max(t1 - t0, 1);
+                  return {
+                    x: ((p.includedAtMs - t0) / span) * plotWidth + 24,
+                    y: yBase,
+                    hash: p.hash,
+                    color: SERIES_COLOR[row.series] ?? "var(--ink-muted)",
+                  };
+                })
+              : simulatedPoints(20, rowIndex * 13, 40).map((p, i) => ({
+                  x: (p.x / 100) * plotWidth + 24,
+                  y: yBase + (i % 2 === 0 ? -6 : 6),
                   hash: null,
+                  color: SERIES_COLOR[row.series] ?? "var(--ink-muted)",
                 }));
 
           return (
@@ -75,16 +78,28 @@ export function WorkloadStripPlot({
                 y1={yBase}
                 x2={width - 24}
                 y2={yBase}
-                stroke="var(--gridline)"
-                strokeWidth="2"
+                className="chart-track"
               />
+              {Array.from({ length: 5 }).map((_, i) => (
+                <line
+                  key={`grid-${row.series}-${i}`}
+                  x1={24 + (plotWidth / 4) * i}
+                  y1={yBase - 12}
+                  x2={24 + (plotWidth / 4) * i}
+                  y2={yBase + 12}
+                  className="chart-grid"
+                  opacity="0.35"
+                />
+              ))}
               {points.map((p, i) => (
                 <circle
                   key={`${row.series}-${i}`}
                   cx={p.x}
                   cy={p.y}
-                  r="4"
-                  fill={SERIES_COLOR[row.series] ?? "var(--ink-muted)"}
+                  className="chart-mark"
+                  fill={p.color}
+                  stroke="var(--surface-card)"
+                  strokeWidth="2"
                 >
                   {p.hash ? <title>{p.hash}</title> : null}
                 </circle>

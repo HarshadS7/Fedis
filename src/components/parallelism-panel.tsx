@@ -1,15 +1,18 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { SeriesLegend } from "@/components/ui/series-legend";
 import { StatTile } from "@/components/ui/stat-tile";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { WorkloadStripPlot } from "@/components/workload-strip-plot";
-import { fetchDemoFire } from "@/lib/api";
-import type { BenchWorkloadSeries } from "@/lib/types";
+import { streamDemoFire } from "@/lib/api";
+import { formatAddress } from "@/lib/format";
 import type {
+  BenchStreamState,
+  BenchTxReceiptRow,
+  BenchWorkloadSeries,
   DemoFireResult,
   DemoFireWorkload,
   WorkloadMeasurement,
@@ -24,7 +27,6 @@ type WorkloadRow = {
   reverts: number;
   p50InclusionMs: number | null;
   p95InclusionMs: number | null;
-  txHash: string | null;
 };
 
 const SERIES_COLOR: Record<string, string> = {
@@ -52,7 +54,6 @@ function measurementRow(
     reverts: m.reverted,
     p50InclusionMs: m.p50InclusionMs,
     p95InclusionMs: m.p95InclusionMs,
-    txHash: null,
   };
 }
 
@@ -66,7 +67,6 @@ function simulatedRow(key: string, workload: DemoFireWorkload): WorkloadRow {
     reverts: workload.reverts,
     p50InclusionMs: null,
     p95InclusionMs: null,
-    txHash: null,
   };
 }
 
@@ -97,15 +97,45 @@ function rowsFromResult(result: DemoFireResult): WorkloadRow[] {
   ];
 }
 
+function streamBadge(state: BenchStreamState): { tone: "good" | "warning" | "serious"; label: string } | null {
+  switch (state) {
+    case "connecting":
+      return { tone: "warning", label: "CONNECTING" };
+    case "streaming":
+      return { tone: "good", label: "STREAM LIVE" };
+    case "done":
+      return { tone: "good", label: "STREAM DONE" };
+    case "error":
+      return { tone: "serious", label: "STREAM ERROR" };
+    default:
+      return null;
+  }
+}
+
 export function ParallelismPanel() {
   const [result, setResult] = useState<DemoFireResult | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [streamState, setStreamState] = useState<BenchStreamState>("idle");
+  const [stage, setStage] = useState<string | null>(null);
+  const [txRows, setTxRows] = useState<BenchTxReceiptRow[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const closerRef = useRef<(() => void) | null>(null);
 
-  const run = useCallback(async () => {
-    setLoading(true);
-    const next = await fetchDemoFire(50);
-    setResult(next);
-    setLoading(false);
+  const run = useCallback(() => {
+    closerRef.current?.();
+    setResult(null);
+    setTxRows([]);
+    setError(null);
+    setStage(null);
+    setStreamState("connecting");
+
+    const { close } = streamDemoFire(50, {
+      onState: setStreamState,
+      onStage: setStage,
+      onTx: (tx) => setTxRows((prev) => [...prev, tx]),
+      onDone: (next) => setResult(next),
+      onError: (message) => setError(message),
+    });
+    closerRef.current = close;
   }, []);
 
   const rows = useMemo(
@@ -114,8 +144,66 @@ export function ParallelismPanel() {
   );
 
   const measured = result?.ourMeasurements ?? null;
+  const loading = streamState === "connecting" || streamState === "streaming";
+  const streamStatus = streamBadge(streamState);
 
-  const columns: DataTableColumn<WorkloadRow>[] = [
+  const stripSeries: BenchWorkloadSeries[] = useMemo(() => {
+    if (measured?.transactions) {
+      return [
+        {
+          label: "Independent",
+          series: "series-1",
+          points: measured.transactions.independent.map((p) => ({
+            hash: p.hash,
+            submittedAtMs: p.submittedAtMs,
+            includedAtMs: p.includedAtMs,
+            latest: p.latest,
+            safe: p.safe,
+            finalized: p.finalized,
+          })),
+        },
+        {
+          label: "Conflicting",
+          series: "series-2",
+          points: measured.transactions.conflicting.map((p) => ({
+            hash: p.hash,
+            submittedAtMs: p.submittedAtMs,
+            includedAtMs: p.includedAtMs,
+            latest: p.latest,
+            safe: p.safe,
+            finalized: p.finalized,
+          })),
+        },
+      ];
+    }
+
+    return rows.map((row) => ({
+      label: row.key === "independent" ? "Independent" : "Conflicting",
+      series: row.series,
+      points: txRows
+        .filter((tx) => tx.workload.toLowerCase().includes(row.key))
+        .map((tx) => ({
+          hash: tx.hash,
+          submittedAtMs: Date.now() - 100,
+          includedAtMs: Date.now(),
+          latest: tx.latest,
+          safe: tx.safe,
+          finalized: tx.finalized,
+        })),
+    }));
+  }, [measured, rows, txRows]);
+
+  const finalityCounts = useMemo(() => {
+    const counts = { latest: 0, safe: 0, finalized: 0 };
+    for (const tx of txRows) {
+      if (tx.latest) counts.latest += 1;
+      if (tx.safe) counts.safe += 1;
+      if (tx.finalized) counts.finalized += 1;
+    }
+    return counts;
+  }, [txRows]);
+
+  const workloadColumns: DataTableColumn<WorkloadRow>[] = [
     {
       key: "label",
       header: "Workload",
@@ -162,58 +250,92 @@ export function ParallelismPanel() {
       render: (row) =>
         row.p95InclusionMs === null ? "—" : `${row.p95InclusionMs}ms`,
     },
+  ];
+
+  const txColumns: DataTableColumn<BenchTxReceiptRow>[] = [
     {
-      key: "txHash",
-      header: "Receipt",
-      render: (row) =>
-        row.txHash ? (
-          <span className="font-mono text-xs tabular-nums">{row.txHash}</span>
-        ) : (
-          <span className="text-[var(--ink-muted)]">—</span>
-        ),
+      key: "workload",
+      header: "Workload",
+      render: (row) => row.workload,
+    },
+    {
+      key: "hash",
+      header: "Tx hash",
+      render: (row) => (
+        <a
+          href={`https://explorer.monad.xyz/tx/${row.hash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs tabular-nums text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+        >
+          {formatAddress(row.hash, 8, 6)}
+        </a>
+      ),
+    },
+    {
+      key: "latest",
+      header: "latest",
+      align: "right",
+      render: (row) => (row.latest ? "yes" : "no"),
+    },
+    {
+      key: "safe",
+      header: "safe",
+      align: "right",
+      render: (row) => (row.safe ? "yes" : "no"),
+    },
+    {
+      key: "finalized",
+      header: "finalized",
+      align: "right",
+      render: (row) => (row.finalized ? "yes" : "no"),
     },
   ];
 
   const totalReverts = rows.reduce((sum, row) => sum + row.reverts, 0);
   const totalTx = rows.reduce((sum, row) => sum + row.txCount, 0);
 
-  const stripSeries: BenchWorkloadSeries[] = rows.map((row) => ({
-    label: row.key === "independent" ? "Independent" : "Conflicting",
-    series: row.series,
-    points: [],
-  }));
-
   return (
     <Card title="Monad parallelism benchmark">
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <button
           type="button"
-          onClick={() => void run()}
+          onClick={() => run()}
           disabled={loading}
           className="rounded border border-[var(--border)] px-3 py-2 text-sm text-[var(--ink-primary)] disabled:opacity-50"
         >
-          {loading ? "Running…" : "Run benchmark (n=50)"}
+          {loading ? "Streaming…" : "Run benchmark stream (n=50)"}
         </button>
         {result?.simulated ? (
           <StatusBadge tone="warning" label="SIMULATED" />
         ) : null}
-        {measured ? <StatusBadge tone="good" label="MEASURED" /> : null}
-        {loading ? <StatusBadge tone="warning" label="CONNECTING" /> : null}
+        {measured && !result?.simulated ? (
+          <StatusBadge tone="good" label="MEASURED" />
+        ) : null}
+        {streamStatus ? (
+          <StatusBadge tone={streamStatus.tone} label={streamStatus.label} />
+        ) : null}
       </div>
 
       <div className="mb-4">
         <SeriesLegend items={LEGEND} />
       </div>
 
-      {result?.error && !result.workloads && !measured ? (
-        <p className="mb-4 text-sm text-[var(--status-warning)]">{result.error}</p>
+      {stage ? (
+        <p className="mb-2 text-xs text-[var(--ink-muted)]">{stage}</p>
+      ) : null}
+
+      {(error || result?.error) && !rows.length ? (
+        <p className="mb-4 text-sm text-[var(--status-warning)]">
+          {error ?? result?.error}
+        </p>
       ) : null}
 
       {result?.note ? (
         <p className="mb-4 text-xs text-[var(--ink-muted)]">{result.note}</p>
       ) : null}
 
-      {rows.length > 0 ? (
+      {rows.length > 0 || txRows.length > 0 ? (
         <>
           <div className="mb-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatTile label="Total txs" value={totalTx.toLocaleString("en-US")} />
@@ -251,26 +373,38 @@ export function ParallelismPanel() {
             </p>
             <div className="grid gap-2 sm:grid-cols-3">
               <p>
-                <span className="text-[var(--ink-primary)]">latest</span> — tx
-                included in head block
+                <span className="text-[var(--ink-primary)]">latest</span>:{" "}
+                {finalityCounts.latest}
               </p>
               <p>
-                <span className="text-[var(--ink-primary)]">safe</span> — unlikely
-                to reorg under normal conditions
+                <span className="text-[var(--ink-primary)]">safe</span>:{" "}
+                {finalityCounts.safe}
               </p>
               <p>
-                <span className="text-[var(--ink-primary)]">finalized</span> —
-                irreversible (Monad published finality: 800ms)
+                <span className="text-[var(--ink-primary)]">finalized</span>:{" "}
+                {finalityCounts.finalized}
               </p>
             </div>
           </div>
 
           <DataTable
-            columns={columns}
+            columns={workloadColumns}
             rows={rows}
             rowKey={(row) => row.key}
             emptyMessage="No workload rows."
           />
+
+          <div className="mt-4">
+            <h3 className="mb-2 text-sm text-[var(--ink-secondary)]">
+              Tx receipts ({txRows.length})
+            </h3>
+            <DataTable
+              columns={txColumns}
+              rows={txRows}
+              rowKey={(row) => row.key}
+              emptyMessage="Streaming txs…"
+            />
+          </div>
 
           <div className="mt-4 rounded border border-[var(--border)] p-3 text-xs text-[var(--ink-muted)]">
             <p className="mb-1 text-[var(--ink-secondary)]">
@@ -284,7 +418,7 @@ export function ParallelismPanel() {
               Our measurements:{" "}
               {measured
                 ? `recorded ${new Date(measured.measuredAt).toLocaleTimeString()} on ${measured.rpc}`
-                : "none — benchmark not wired to chain yet"}
+                : "streaming or simulated — run fire.mjs on :8547 for measured hashes"}
             </p>
             {measured?.note ? (
               <p className="mt-2 text-[var(--ink-secondary)]">{measured.note}</p>
@@ -293,7 +427,7 @@ export function ParallelismPanel() {
         </>
       ) : !loading && !result ? (
         <p className="text-sm text-[var(--ink-secondary)]">
-          Run the benchmark to compare independent vs conflicting workloads.
+          Run the benchmark stream to compare independent vs conflicting workloads.
         </p>
       ) : null}
     </Card>

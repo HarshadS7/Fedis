@@ -65,6 +65,20 @@ export type OurMeasurements = {
   note?: string;
   independent: WorkloadMeasurement;
   conflicting: WorkloadMeasurement;
+  transactions?: {
+    independent: BenchTxPoint[];
+    conflicting: BenchTxPoint[];
+  };
+};
+
+export type BenchStreamState = "idle" | "connecting" | "streaming" | "done" | "error";
+
+export type BenchStreamHandlers = {
+  onState?: (state: BenchStreamState) => void;
+  onStage?: (label: string) => void;
+  onTx?: (tx: BenchTxReceiptRow) => void;
+  onDone?: (result: DemoFireResult) => void;
+  onError?: (message: string) => void;
 };
 
 export type DemoFireResult = {
@@ -145,6 +159,18 @@ export type BenchTxPoint = {
   hash: string;
   submittedAtMs: number;
   includedAtMs: number;
+  ok?: boolean;
+  block?: number | null;
+  latest: boolean;
+  safe: boolean;
+  finalized: boolean;
+};
+
+export type BenchTxReceiptRow = {
+  key: string;
+  workload: string;
+  hash: string;
+  inclusionMs: number;
   latest: boolean;
   safe: boolean;
   finalized: boolean;
